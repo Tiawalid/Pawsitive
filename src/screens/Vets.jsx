@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet, ScrollView }
 import { SearchBar } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
-import MyTab from '../screens/Tab';
+
 
 export default function Home() {
   const navigation = useNavigation();

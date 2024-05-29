@@ -4,6 +4,7 @@ import { Button } from 'galio-framework';
 import { Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
+
 const InterfacesPage = () => {
   const navigation = useNavigation();
 

@@ -1,15 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
-import { useState } from "react";
-import { Appbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { Appbar } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
 export const MyComponent = () => {
   const navigation = useNavigation();
 
   const _goBack = () => {
-    
     navigation.goBack();
   };
 
@@ -17,72 +24,78 @@ export const MyComponent = () => {
     <Appbar.Header style={{ backgroundColor: "#ADD8E6" }}>
       <Appbar.BackAction onPress={_goBack} />
       <View style={styles.logoContainer}>
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={styles.logo}
+        />
       </View>
     </Appbar.Header>
   );
 };
 
-const LoginForm = ({navigation}) => {
-  const [username, setUsername] = useState("");
+const LoginForm = ({ navigation, loggedIn }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const validateForm = () => {
-    let errors = {};
-
-    if (!username) errors.username = "Username is required";
-    if (!password) errors.password = "Password is required";
-
-    setErrors(errors);
-
-    return Object.keys(errors).length === 0;
+  const handleSubmit = async () => {
+    await axios
+      .post("https://pawsitive-c80s.onrender.com/api/signin", {
+        email: email,
+        password: password,
+      })
+      .then(async (response) => {
+        if (response.data.error) {
+          setErrorMessage(response.data.error);
+        }
+        if (response.data.accessToken) {
+          await SecureStore.setItemAsync(
+            "userToken",
+            response.data.accessToken
+          );
+          console.log(response.data.accessToken); // Log the user token
+          loggedIn();
+        }
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log("Submitted", username, password);
-      navigation.navigate('Home');
-      setUsername("");
-      setPassword("");
-      setErrors({});
-    }
-  };
-  
   const goToForgotPassword = () => {
-    navigation.push("Forgotpassword")
+    navigation.push("Forgotpassword");
   };
 
   return (
     <ScrollView
-    contentContainerStyle={styles.scrollViewContent}
-      
+      contentContainerStyle={styles.scrollViewContent}
       style={styles.container}
     >
-     
-
       <View style={styles.form}>
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter your email"
-          value={username}
-          onChangeText={setUsername}
+          value={email}
+          onChangeText={(val) => {
+            setEmail(val);
+          }}
         />
-        {errors.username ? (
-          <Text style={styles.errorText}>{errors.username}</Text>
-        ) : null}
 
         <Text style={styles.label}>Password</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter your password"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(val) => {
+            setPassword(val);
+          }}
           secureTextEntry
         />
-        {errors.password ? (
-          <Text style={styles.errorText}>{errors.password}</Text>
+
+        {errorMessage ? (
+          <Text style={{ color: "red" }}>{errorMessage}</Text>
         ) : null}
 
         <TouchableOpacity onPress={goToForgotPassword}>
@@ -92,28 +105,28 @@ const LoginForm = ({navigation}) => {
         <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
           <Text style={styles.loginButtonText}>Login</Text>
         </TouchableOpacity>
-        <Image source={require("../../assets/images/doglogin.png")} style={{width: 300,height: 250,marginLeft: 10, marginTop: 50}} />
+        <Image
+          source={require("../../assets/images/doglogin.png")}
+          style={{ width: 300, height: 250, marginLeft: 10, marginTop: 50 }}
+        />
       </View>
     </ScrollView>
-    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
     paddingHorizontal: 20,
     backgroundColor: "#ADD8E6",
   },
   logoContainer: {
-    alignItems: 'center',
-    
+    alignItems: "center",
   },
   logo: {
     width: 100,
     height: 100,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   form: {
     padding: 20,
@@ -132,7 +145,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     fontWeight: "bold",
-    color: "#0097f2", 
+    color: "#0097f2",
   },
   input: {
     height: 40,
@@ -148,23 +161,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   forgotPassword: {
-    color: 'grey',
+    color: "grey",
     marginTop: 20,
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
     fontSize: 13,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 20,
   },
   loginButton: {
-    backgroundColor: '#0097f2',
+    backgroundColor: "#0097f2",
     paddingVertical: 15,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   loginButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

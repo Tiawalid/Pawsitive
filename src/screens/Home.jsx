@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     borderTopColor: 'transparent',
     flex: 1,
     marginTop: 80, 
+    marginBottom: 10,
   },
   searchInputContainer: {
     backgroundColor: '#fff',
@@ -105,10 +106,10 @@ const styles = StyleSheet.create({
     height: 40,
   },
   content: {
+    flex: 1,
     paddingHorizontal: 16,
     marginTop: -20,
     paddingBottom: 10,
-    alignItems: 'center', // Align items in the center horizontally
   },
   cardsContainer: {
     justifyContent: 'center',
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     padding: 30,
     borderRadius: 20,
     marginBottom: 20,
-    width: 170,
+    width: 170, 
     height: 200,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

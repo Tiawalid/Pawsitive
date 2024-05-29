@@ -1,41 +1,67 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { Icon } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 
 const settingsOptions = [
-  { icon: 'lock-outline', label: 'Access and permission' },
-  { icon: 'language', label: 'Language settings' },
-  { icon: 'shield-outline', label: 'Data and privacy' },
-  { icon: 'assignment-turned-in', label: 'Finished Orders' },
-  { icon: 'backup', label: 'Backup and recovery options' },
-  { icon: 'headset-mic', label: 'Customer Support' },
-  { icon: 'bar-chart', label: 'Reports and analysis' },
-  { icon: 'logout', label: 'Log out' },
+  { icon: "lock-outline", label: "Access and permission" },
+  { icon: "language", label: "Language settings" },
+  { icon: "shield-outline", label: "Data and privacy" },
+  { icon: "assignment-turned-in", label: "Finished Orders" },
+  { icon: "backup", label: "Backup and recovery options" },
+  { icon: "headset-mic", label: "Customer Support" },
+  { icon: "bar-chart", label: "Reports and analysis" },
+  { icon: "logout", label: "Log out", action: "logout" },
 ];
 
 const Settings = () => {
   const navigation = useNavigation();
 
-  const goToTabs = () => {
-    navigation.navigate('MyTab'); 
+  const handleOptionPress = async (action) => {
+    if (action === "logout") {
+      await SecureStore.deleteItemAsync("userToken");
+      navigation.navigate("Login");
+    } else {
+      navigation.navigate("Tab");
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Icon name="arrow-back" onPress={() => navigation.goBack()} />
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-        <Icon name="notifications" color="red">
+        <Image
+          source={require("../../assets/images/logo.png")}
+          style={styles.logo}
+        />
+        <View>
+          <Icon name="notifications" color="red" />
           <View style={styles.notificationBadge}>
             <Text style={styles.notificationText}>10</Text>
           </View>
-        </Icon>
+        </View>
       </View>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {settingsOptions.map((option, index) => (
-          <TouchableOpacity key={index} style={styles.option} onPress={goToTabs}>
-            <Icon name={option.icon} size={24} color="#0097f2" style={styles.optionIcon} />
+          <TouchableOpacity
+            key={index}
+            style={styles.option}
+            onPress={() => handleOptionPress(option.action)}
+          >
+            <Icon
+              name={option.icon}
+              size={24}
+              color="#0097f2"
+              style={styles.optionIcon}
+            />
             <Text style={styles.optionLabel}>{option.label}</Text>
             <Icon name="chevron-right" size={24} color="#ccc" />
           </TouchableOpacity>
@@ -48,46 +74,46 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ADD8E6',
+    backgroundColor: "#ADD8E6",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: '#ADD8E6',
+    backgroundColor: "#ADD8E6",
   },
   logo: {
     width: 100,
     height: 100,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     flex: 1,
     marginLeft: 16,
   },
   notificationBadge: {
-    position: 'absolute',
+    position: "absolute",
     top: -4,
     right: -4,
-    backgroundColor: 'red',
+    backgroundColor: "red",
     borderRadius: 8,
     width: 16,
     height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   notificationText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   scrollViewContent: {
     paddingVertical: 20,
   },
   option: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginBottom: 1,
   },
   optionIcon: {
