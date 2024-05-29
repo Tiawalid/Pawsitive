@@ -26,12 +26,8 @@ const Settings = ({ logout }) => {
   const navigation = useNavigation();
 
   const handleOptionPress = async action => {
-    if (action === "logout") {
-      await SecureStore.deleteItemAsync("userToken");
-      logout();
-    } else {
-      navigation.navigate("Tab");
-    }
+    await SecureStore.deleteItemAsync("userToken");
+    logout();
   };
 
   return (
