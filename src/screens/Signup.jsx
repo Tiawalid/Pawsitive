@@ -98,7 +98,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
             "userToken",
             response.data.accessToken
           );
-          console.log(response.data.accessToken); // Log the user token
+          console.log(response.data.accessToken);
           loggedIn();
         }
       })

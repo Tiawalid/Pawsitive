@@ -40,27 +40,40 @@ const LoginForm = ({ navigation, loggedIn }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async () => {
-    await axios
-      .post("https://pawsitive-c80s.onrender.com/api/signin", {
-        email: email,
-        password: password,
-      })
-      .then(async (response) => {
-        if (response.data.error) {
-          setErrorMessage(response.data.error);
+    console.log("HandleSubmit called");
+    try {
+      const response = await axios.post(
+        "https://pawsitive-c80s.onrender.com/api/signin",
+        {
+          email: email,
+          password: password,
         }
-        if (response.data.accessToken) {
-          await SecureStore.setItemAsync(
-            "userToken",
-            response.data.accessToken
-          );
-          console.log(response.data.accessToken); // Log the user token
-          loggedIn();
-        }
-      })
-      .catch((error) => {
-        console.log(error.response);
-      });
+      );
+      console.log("Response received:", response.data);
+      if (response.data.error) {
+        setErrorMessage(response.data.error);
+      }
+      if (response.data.accessToken) {
+        await SecureStore.setItemAsync("userToken", response.data.accessToken);
+        console.log("User token saved:", response.data.accessToken);
+        loggedIn();
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log("Error response data:", error.response.data);
+        console.log("Error response status:", error.response.status);
+        console.log("Error response headers:", error.response.headers);
+        setErrorMessage("An error occurred. Please try again.");
+      } else if (error.request) {
+        console.log("Error request:", error.request);
+        setErrorMessage(
+          "No response from server. Please check your network connection."
+        );
+      } else {
+        console.log("Error message:", error.message);
+        setErrorMessage("An error occurred. Please try again.");
+      }
+    }
   };
 
   const goToForgotPassword = () => {
