@@ -55,7 +55,7 @@ const App = () => {
       isLoading: true,
       isSignout: true,
       userToken: null,
-    }
+    },
   );
 
   React.useEffect(() => {
@@ -74,12 +74,12 @@ const App = () => {
 
   const authContext = React.useMemo(
     () => ({
-      login: async (data) => {
+      login: async data => {
         dispatch({ type: "LOG_IN", token: "dummy-auth-token" });
       },
       logout: () => dispatch({ type: "LOG_OUT" }),
     }),
-    []
+    [],
   );
 
   return (
@@ -140,7 +140,16 @@ const App = () => {
             <>
               <Stack.Screen
                 name="Home"
-                component={MyTabs}
+                component={({ navigation }) => {
+                  return (
+                    <MyTabs
+                      navigation={navigation}
+                      logout={() => {
+                        dispatch({ type: "LOG_OUT" });
+                      }}
+                    />
+                  );
+                }}
                 options={{ headerShown: false }}
               />
               <Stack.Screen

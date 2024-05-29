@@ -22,13 +22,13 @@ const settingsOptions = [
   { icon: "logout", label: "Log out", action: "logout" },
 ];
 
-const Settings = () => {
+const Settings = ({ logout }) => {
   const navigation = useNavigation();
 
-  const handleOptionPress = async (action) => {
+  const handleOptionPress = async action => {
     if (action === "logout") {
       await SecureStore.deleteItemAsync("userToken");
-      navigation.navigate("Login");
+      logout();
     } else {
       navigation.navigate("Tab");
     }

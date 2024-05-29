@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   ScrollView,
@@ -46,6 +46,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
   const [Password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [type, setType] = useState("");
 
   const validateForm = () => {
     let errors = {};
@@ -84,9 +85,10 @@ const SignUpForm = ({ navigation, loggedIn }) => {
         Syndicatecard,
         password: Password,
         gender: "male",
-        role: "shop",
+        role:
+          type == "pet owner" ? "petOwner" : type == "pet vet" ? "vet" : "shop",
       })
-      .then(async (response) => {
+      .then(async response => {
         console.log(response.data);
         if (response.data.error) {
           setErrorMessage(response.data.error);
@@ -96,13 +98,13 @@ const SignUpForm = ({ navigation, loggedIn }) => {
         if (response.data.accessToken) {
           await SecureStore.setItemAsync(
             "userToken",
-            response.data.accessToken
+            response.data.accessToken,
           );
           console.log(response.data.accessToken);
           loggedIn();
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error.response.data);
         // setName("");
         // setAge("");
@@ -115,6 +117,15 @@ const SignUpForm = ({ navigation, loggedIn }) => {
         // setErrors({});
       });
   };
+
+  const getUserType = async () => {
+    const userType = await SecureStore.getItemAsync("user_type");
+    setType(userType);
+  };
+
+  useEffect(() => {
+    getUserType();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -136,14 +147,20 @@ const SignUpForm = ({ navigation, loggedIn }) => {
           />
           {errors.Name && <Text style={styles.errorText}>{errors.Name}</Text>}
 
-          <Text style={styles.label}>Age</Text>
-          <TextInput
-            style={[styles.input, { backgroundColor: "#F5F5F5" }]}
-            placeholder="required if you're a pet owner"
-            value={Age}
-            onChangeText={setAge}
-          />
-          {errors.Age && <Text style={styles.errorText}>{errors.Age}</Text>}
+          {type == "pet owner" ? (
+            <>
+              <Text style={styles.label}>Age</Text>
+              <TextInput
+                style={[styles.input, { backgroundColor: "#F5F5F5" }]}
+                placeholder="required if you're a pet owner"
+                value={Age}
+                onChangeText={setAge}
+              />
+              {errors.Age && <Text style={styles.errorText}>{errors.Age}</Text>}
+            </>
+          ) : (
+            ""
+          )}
 
           <Text style={styles.label}>Phone Number</Text>
           <TextInput
@@ -176,26 +193,38 @@ const SignUpForm = ({ navigation, loggedIn }) => {
           />
           {errors.Email && <Text style={styles.errorText}>{errors.Email}</Text>}
 
-          <Text style={styles.label}>Tax Register</Text>
-          <TextInput
-            style={[styles.input, { backgroundColor: "#F5F5F5" }]}
-            placeholder="required if you're a pet shop"
-            value={TaxRegister}
-            onChangeText={setTaxRegister}
-          />
-          {errors.TaxRegister && (
-            <Text style={styles.errorText}>{errors.TaxRegister}</Text>
+          {type == "pet shop" ? (
+            <>
+              <Text style={styles.label}>Tax Register</Text>
+              <TextInput
+                style={[styles.input, { backgroundColor: "#F5F5F5" }]}
+                placeholder="required if you're a pet shop"
+                value={TaxRegister}
+                onChangeText={setTaxRegister}
+              />
+              {errors.TaxRegister && (
+                <Text style={styles.errorText}>{errors.TaxRegister}</Text>
+              )}
+            </>
+          ) : (
+            ""
           )}
 
-          <Text style={styles.label}>Syndicate card</Text>
-          <TextInput
-            style={[styles.input, { backgroundColor: "#F5F5F5" }]}
-            placeholder="required if you're a vet"
-            value={Syndicatecard}
-            onChangeText={setSyndicatecard}
-          />
-          {errors.Syndicatecard && (
-            <Text style={styles.errorText}>{errors.Syndicatecard}</Text>
+          {type == "pet vet" ? (
+            <>
+              <Text style={styles.label}>Syndicate card</Text>
+              <TextInput
+                style={[styles.input, { backgroundColor: "#F5F5F5" }]}
+                placeholder="required if you're a vet"
+                value={Syndicatecard}
+                onChangeText={setSyndicatecard}
+              />
+              {errors.Syndicatecard && (
+                <Text style={styles.errorText}>{errors.Syndicatecard}</Text>
+              )}
+            </>
+          ) : (
+            ""
           )}
 
           <Text style={styles.label}>Set Password</Text>
