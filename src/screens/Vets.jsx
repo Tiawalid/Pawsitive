@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -9,17 +9,40 @@ import {
   ScrollView,
 } from "react-native";
 import { SearchBar } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
 export default function Home({ navigation }) {
-  // const navigation = useNavigation();
-
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  const [items] = useState([
+  const [vets, setVets] = useState([]);
+
+  const getToken = async () => {
+    const token = await SecureStore.getItemAsync("userToken");
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  };
+
+  const getVets = async () => {
+    await getToken();
+    try {
+      const response = await axios.get(
+        "https://pawsitive-c80s.onrender.com/api/get/vet"
+      );
+      console.log(response.data);
+      setVets(response.data);
+    } catch (error) {
+      console.error("Error fetching vets data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getVets();
+  }, []);
+
+  const items = [
     {
       id: 1,
       text: "Book an Appointment",
@@ -35,15 +58,32 @@ export default function Home({ navigation }) {
       text: "Chat with a vet",
       image: require("../../assets/images/chatbot.jpeg"),
     },
-  ]);
+  ];
 
   const [search, setSearch] = useState("");
 
-  const updateSearch = text => {
+  const updateSearch = (text) => {
     setSearch(text);
   };
 
-  const handleCardPress = item => {
+  const getSearch = async () => {
+    await getToken();
+    try {
+      const response = await axios.get(
+        "https://3VQGNMZJRN-dsn.algolia.net/1/indexes/food/query"
+      );
+      console.log(response.data);
+      setSearch(response.data);
+    } catch (error) {
+      console.error("Error fetching search results: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getSearch();
+  }, []);
+
+  const handleCardPress = (item) => {
     if (item.text === "Chat with a vet") {
       navigation.navigate("Chatbot");
     } else if (item.text === "Book an Appointment") {
@@ -59,9 +99,7 @@ export default function Home({ navigation }) {
       </View>
     </TouchableOpacity>
   );
-  const goToTabs = () => {
-    navigation.navigate("MyTab");
-  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -89,7 +127,7 @@ export default function Home({ navigation }) {
           <FlatList
             data={items}
             numColumns={2}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) => item.id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             contentContainerStyle={styles.cardsContainer}

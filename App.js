@@ -19,6 +19,7 @@ import Debitcard from "./src/screens/Debitcard";
 import Orderplaced from "./src/screens/Orderplaced";
 import Settings from "./src/screens/Settings";
 import MyChip from "./src/screens/MyChip";
+
 import * as SecureStore from "expo-secure-store";
 
 const Stack = createNativeStackNavigator();
@@ -55,7 +56,7 @@ const App = () => {
       isLoading: true,
       isSignout: true,
       userToken: null,
-    },
+    }
   );
 
   React.useEffect(() => {
@@ -74,12 +75,12 @@ const App = () => {
 
   const authContext = React.useMemo(
     () => ({
-      login: async data => {
+      login: async (data) => {
         dispatch({ type: "LOG_IN", token: "dummy-auth-token" });
       },
       logout: () => dispatch({ type: "LOG_OUT" }),
     }),
-    [],
+    []
   );
 
   return (
@@ -162,6 +163,7 @@ const App = () => {
                 component={Vets}
                 options={{ headerShown: false }}
               />
+
               <Stack.Screen
                 name="Chatbot"
                 component={Chatbot}

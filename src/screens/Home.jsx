@@ -14,27 +14,6 @@ import axios from "axios";
 
 export default function Home() {
   const navigation = useNavigation();
-  const [categories, setCategories] = useState([]);
-
-  const getToken = async () => {
-    const token = await SecureStore.getItemAsync("userToken");
-
-    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  };
-
-  const getCategories = async () => {
-    getToken();
-    await axios
-      .get("https://pawsitive-c80s.onrender.com/api/get/category")
-      .then(response => {
-        console.log(response.data);
-        setCategories(response.data);
-      });
-  };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
 
   const [items] = useState([
     { id: 1, text: "Vets", image: require("../../assets/images/vets.jpg") },
@@ -58,33 +37,48 @@ export default function Home() {
       text: "Tips and Blogs",
       image: require("../../assets/images/tipsblogs.jpg"),
     },
-    {
-      id: 6,
-      text: "Adoption",
-      image: require("../../assets/images/Adoption.jpg"),
-    },
   ]);
 
   const [search, setSearch] = useState("");
 
-  const updateSearch = text => {
+  const updateSearch = (text) => {
     setSearch(text);
   };
 
-  const handleCardPress = item => {
-    // if (item.text === "Petshops") {
-    // navigation.navigate("PetShops");
-    // }
-    // if (item.text === "Vets") {
-    navigation.navigate("Vets");
-    // }
+  const getSearch = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      if (token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      }
+      const response = await axios.get(
+        "https://3VQGNMZJRN-dsn.algolia.net/1/indexes/food/query"
+      );
+      console.log(response.data);
+      setSearch(response.data);
+    } catch (error) {
+      console.error("Error fetching search results: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getSearch();
+  }, []);
+
+  const handleCardPress = (item) => {
+    if (item.text === "Petshops") {
+      navigation.navigate("PetShops");
+    }
+    if (item.text === "Vets") {
+      navigation.navigate("Vets");
+    }
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item)}>
       <View>
-        <Image source={items[0].image} style={styles.image} />
-        <Text style={styles.text}>{item.name}</Text>
+        <Image source={item.image} style={styles.image} />
+        <Text style={styles.text}>{item.text}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -110,9 +104,9 @@ export default function Home() {
       </View>
       <View style={styles.content}>
         <FlatList
-          data={categories}
+          data={items}
           numColumns={2}
-          keyExtractor={item => item._id}
+          keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
           contentContainerStyle={styles.cardsContainer}

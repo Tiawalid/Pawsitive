@@ -88,7 +88,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
         role:
           type == "pet owner" ? "petOwner" : type == "pet vet" ? "vet" : "shop",
       })
-      .then(async response => {
+      .then(async (response) => {
         console.log(response.data);
         if (response.data.error) {
           setErrorMessage(response.data.error);
@@ -98,13 +98,13 @@ const SignUpForm = ({ navigation, loggedIn }) => {
         if (response.data.accessToken) {
           await SecureStore.setItemAsync(
             "userToken",
-            response.data.accessToken,
+            response.data.accessToken
           );
           console.log(response.data.accessToken);
           loggedIn();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error.response.data);
         // setName("");
         // setAge("");
@@ -152,7 +152,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
               <Text style={styles.label}>Age</Text>
               <TextInput
                 style={[styles.input, { backgroundColor: "#F5F5F5" }]}
-                placeholder="required if you're a pet owner"
+                placeholder=""
                 value={Age}
                 onChangeText={setAge}
               />
@@ -198,7 +198,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
               <Text style={styles.label}>Tax Register</Text>
               <TextInput
                 style={[styles.input, { backgroundColor: "#F5F5F5" }]}
-                placeholder="required if you're a pet shop"
+                placeholder=""
                 value={TaxRegister}
                 onChangeText={setTaxRegister}
               />
@@ -215,7 +215,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
               <Text style={styles.label}>Syndicate card</Text>
               <TextInput
                 style={[styles.input, { backgroundColor: "#F5F5F5" }]}
-                placeholder="required if you're a vet"
+                placeholder=""
                 value={Syndicatecard}
                 onChangeText={setSyndicatecard}
               />

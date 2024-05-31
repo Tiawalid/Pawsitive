@@ -1,168 +1,120 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Image, FlatList, StyleSheet, ScrollView } from 'react-native';
-import { SearchBar } from '@rneui/themed';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Appbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import Productdetails from '../screens/Productdetails';
-import MyTab from '../screens/Tab';
-
+import React, { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import { SearchBar } from "@rneui/themed";
+import { Appbar } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
 export default function PetShops() {
-  const Stack = createStackNavigator();
   const navigation = useNavigation();
-  
-  const handleBackPress = () => {
-    navigation.navigate('Home');
-  };
 
+  const handleBackPress = () => {
+    navigation.navigate("Home");
+  };
 
   const handleMyCartPress = () => {
-    console.log('Navigating to Mycart'); 
-    navigation.navigate('Mycart'); 
+    console.log("Navigating to Mycart");
+    navigation.navigate("Mycart");
   };
-  const [items] = useState([
-    { 
-      id: 1, 
-      name: 'Chicken can for kittens', 
-      price: '$10.99', 
-      description: 'High-quality chicken cat food suitable for kittens.', 
-      image: require('../../assets/images/catcanfood.jpeg'), 
-      category: 'Food'
-    },
-    { 
-      id: 2, 
-      name: 'ROYAL CANIN for cats', 
-      price: '$15.99', 
-      description: 'Premium cat food formulated for adult cats.', 
-      image: require('../../assets/images/catcanin.jpg'), 
-      category: 'Food'
-    },
-    { 
-      id: 3, 
-      name: 'Dog can chicken flavor', 
-      price: '$8.99', 
-      description: 'Delicious chicken-flavored dog food for all breeds.', 
-      image: require('../../assets/images/dogcanfood.jpg'), 
-      category: 'Food'
-    },
-    { 
-      id: 4, 
-      name: 'ROYAL CANIN for dogs', 
-      price: '$20.99', 
-      description: 'Specialized dog food for different breeds and sizes.', 
-      image: require('../../assets/images/dogcanin.jpeg'), 
-      category: 'Food'
-    },
-    { 
-      id: 5, 
-      name: 'Pedigree for dogs', 
-      price: '$12.99', 
-      description: 'Balanced nutrition for adult dogs in a tasty formula.', 
-      image: require('../../assets/images/dogfood.jpeg'), 
-      category: 'Food'
-    },
-    { 
-      id: 6, 
-      name: 'Dry food for cats', 
-      price: '$14.99', 
-      description: 'Nutritious dry food suitable for adult cats.', 
-      image: require('../../assets/images/catfood.jpg'), 
-      category: 'Food'
-    },
-    { 
-      id: 7, 
-      name: 'Cat collar', 
-      price: '$8.99', 
-      description: 'Stylish collar for your cat.', 
-      image: require('../../assets/images/catcollar.jpg'), 
-      category: 'Accessories'
-    },
-    { 
-      id: 8, 
-      name: 'Dog leash', 
-      price: '$12.99', 
-      description: 'Durable leash for walking your dog.', 
-      image: require('../../assets/images/dogleash.jpg'), 
-      category: 'Accessories'
-    },
-    { 
-      id: 9, 
-      name: 'Catnip toy', 
-      price: '$5.99', 
-      description: 'Interactive toy filled with catnip.', 
-      image: require('../../assets/images/catniptoy.jpg'), 
-      category: 'Accessories'
-    },
-    { 
-      id: 10, 
-      name: 'Dog bowl', 
-      price: '$6.99', 
-      description: 'Stainless steel bowl for your dog.', 
-      image: require('../../assets/images/dogbowl.jpg'), 
-      category: 'Accessories'
-    },
-    { 
-      id: 11, 
-      name: 'Dog chew toy', 
-      price: '$7.99', 
-      description: 'Durable chew toy for your dog.', 
-      image: require('../../assets/images/dogchewtoy.jpg'), 
-      category: 'Accessories'
-    },
-    { 
-      id: 12, 
-      name: 'Cat bed', 
-      price: '$19.99', 
-      description: 'Soft and cozy bed for your cat.', 
-      image: require('../../assets/images/catbed.jpeg'), 
-      category: 'Accessories'
-    },
-    { 
-      id: 13, 
-      name: 'Dog treats', 
-      price: '$4.99', 
-      description: 'Tasty treats for rewarding your dog.', 
-      image: require('../../assets/images/dogtreats.jpg'), 
-      category: 'Treats'
-    },
-    { 
-      id: 14, 
-      name: 'Cat treats', 
-      price: '$3.99', 
-      description: 'Irresistible treats for your cat.', 
-      image: require('../../assets/images/cattreats.jpg'), 
-      category: 'Treats'
-    },
-  ]);
 
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [items, setItems] = useState([]);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const getToken = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      if (token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      } else {
+        console.error("No token found");
+      }
+    } catch (error) {
+      console.error("Error getting token:", error);
+    }
+  };
+
+  const getItems = async (category) => {
+    await getToken();
+    try {
+      let response;
+      if (category === "Food") {
+        response = await axios.get(
+          "https://pawsitive-c80s.onrender.com/api/category/food"
+        );
+      } else if (category === "Accessories") {
+        response = await axios.get(
+          "https://pawsitive-c80s.onrender.com/api/category/accessories"
+        );
+      } else if (category === "Chips") {
+        response = await axios.get(
+          "https://pawsitive-c80s.onrender.com/api/category/chips"
+        );
+      } else {
+        response = await axios.get(
+          "https://pawsitive-c80s.onrender.com/api/get/product"
+        );
+      }
+      console.log(response.data);
+      setItems(response.data);
+    } catch (error) {
+      console.error(`Error fetching ${category} items: `, error);
+    }
+  };
+
+  const handleCategorySelect = async (category) => {
+    setSelectedCategory(category);
+    await getItems(category);
+  };
+
+  const handleAllProductsSelect = async () => {
+    setSelectedCategory("All Products");
+    await getItems("");
+  };
 
   const updateSearch = (text) => {
     setSearch(text);
   };
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+  const getSearch = async () => {
+    await getToken();
+    try {
+      const response = await axios.get(
+        "https://3VQGNMZJRN-dsn.algolia.net/1/indexes/food/query"
+      );
+      console.log(response.data);
+      setSearch(response.data);
+    } catch (error) {
+      console.error("Error fetching search results: ", error);
+    }
   };
 
+  useEffect(() => {
+    handleAllProductsSelect();
+  }, []);
+
   const handleAddToCart = (item) => {
-    console.log('Adding item to cart:', item);
+    console.log("Adding item to cart:", item);
   };
 
   const handleCardPress = (item) => {
     console.log("Card clicked:", item);
-    navigation.navigate('Productdetails', { item });
+    navigation.navigate("Productdetails", { item });
   };
-
-  const filteredItems = selectedCategory ? items.filter(item => item.category === selectedCategory) : items;
-
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item)}>
       <View style={styles.cardContent}>
-        <Image source={item.image} style={styles.image} />
+        <Image source={{ uri: item.image }} style={styles.image} />
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.price}>{item.price}</Text>
         <Text style={styles.description}>{item.description}</Text>
@@ -175,18 +127,18 @@ export default function PetShops() {
       </View>
     </TouchableOpacity>
   );
-  const goToTabs = () => {
-    navigation.navigate('MyTab'); 
-  };
-  
+
   return (
     <View style={styles.container}>
       <Appbar.Header style={styles.header}>
-      <TouchableOpacity onPress={handleBackPress}>
-        <Appbar.BackAction style={styles.backButton} />
-                </TouchableOpacity>
+        <TouchableOpacity onPress={handleBackPress}>
+          <Appbar.BackAction style={styles.backButton} />
+        </TouchableOpacity>
         <View style={styles.logoContainer}>
-          <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+          <Image
+            source={require("../../assets/images/logo.png")}
+            style={styles.logo}
+          />
         </View>
         <Appbar.Action icon="cart" onPress={handleMyCartPress} />
       </Appbar.Header>
@@ -194,43 +146,65 @@ export default function PetShops() {
         <View style={styles.searchContainer}>
           <SearchBar
             placeholder="What are you looking for?"
-            onChangeText={updateSearch} 
+            onChangeText={updateSearch}
             value={search}
             containerStyle={styles.searchBarContainer}
             inputContainerStyle={styles.searchInputContainer}
           />
         </View>
-        <View style={styles.categoryContainer}>
-          <TouchableOpacity
-            style={[styles.categoryButton, selectedCategory === 'Food' && styles.selectedCategoryButton]}
-            onPress={() => handleCategorySelect('Food')}
-          >
-            <Text style={styles.categoryButtonText}>Food</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.categoryButton, selectedCategory === 'Accessories' && styles.selectedCategoryButton]}
-            onPress={() => handleCategorySelect('Accessories')}
-          >
-            <Text style={styles.categoryButtonText}>Accessories</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.categoryButton, selectedCategory === 'Treats' && styles.selectedCategoryButton]}
-            onPress={() => handleCategorySelect('Treats')}
-          >
-            <Text style={styles.categoryButtonText}>Treats</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.categoryButton, selectedCategory === 'Chips' && styles.selectedCategoryButton]}
-            onPress={() => handleCategorySelect('Chips')}
-          >
-            <Text style={styles.categoryButtonText}>Chips</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoryScroll}
+        >
+          <View style={styles.categoryContainer}>
+            <TouchableOpacity
+              style={[
+                styles.categoryButton,
+                selectedCategory === "All Products" &&
+                  styles.selectedCategoryButton,
+              ]}
+              onPress={handleAllProductsSelect}
+            >
+              <Text style={styles.categoryButtonText}>All Products</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.categoryButton,
+                selectedCategory === "Food" && styles.selectedCategoryButton,
+              ]}
+              onPress={() => handleCategorySelect("Food")}
+            >
+              <Text style={styles.categoryButtonText}>Food</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.categoryButton,
+                selectedCategory === "Accessories" &&
+                  styles.selectedCategoryButton,
+              ]}
+              onPress={() => handleCategorySelect("Accessories")}
+            >
+              <Text style={styles.categoryButtonText}>Accessories</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.categoryButton,
+                selectedCategory === "Chips" && styles.selectedCategoryButton,
+              ]}
+              onPress={() => handleCategorySelect("Chips")}
+            >
+              <Text style={styles.categoryButtonText}>Chips</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
         <View style={styles.content}>
           <FlatList
-            data={filteredItems}
+            data={items}
             numColumns={2}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) =>
+              item.id ? item.id.toString() : Math.random().toString()
+            }
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             contentContainerStyle={styles.cardsContainer}
@@ -244,38 +218,41 @@ export default function PetShops() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ADD8E6',
+    backgroundColor: "#ADD8E6",
   },
   header: {
-    backgroundColor: '#ADD8E6',
+    backgroundColor: "#ADD8E6",
   },
   logoContainer: {
-    marginRight: 'auto',
+    marginRight: "auto",
   },
   logo: {
     width: 100,
     height: 100,
   },
   searchContainer: {
-    backgroundColor: '#ADD8E6',
+    backgroundColor: "#ADD8E6",
     paddingVertical: 8,
     paddingHorizontal: 16,
   },
   searchBarContainer: {
-    backgroundColor: 'transparent', 
-    borderBottomColor: 'transparent',
-    borderTopColor: 'transparent',
+    backgroundColor: "transparent",
+    borderBottomColor: "transparent",
+    borderTopColor: "transparent",
     flex: 1,
   },
   searchInputContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     height: 40,
   },
+  categoryScroll: {
+    marginVertical: 10,
+  },
   categoryContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 16,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
     paddingHorizontal: 16,
   },
   categoryButton: {
@@ -283,14 +260,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     marginRight: 10,
   },
   selectedCategoryButton: {
-    backgroundColor: '#0097f2',
+    backgroundColor: "#0097f2",
   },
   categoryButtonText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   contentContainer: {
     flexGrow: 1,
@@ -299,59 +276,59 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   cardsContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingBottom: 10,
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 30,
     borderRadius: 20,
     marginBottom: 20,
     width: 170,
     height: 300,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
     marginHorizontal: 10,
-    alignItems: 'center', 
-    justifyContent: 'center', 
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardContent: {
     flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     width: 120,
     height: 120,
     marginBottom: 10,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   name: {
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 5,
   },
   price: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 5,
-    color: 'blue', 
+    color: "blue",
   },
   description: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
   },
   addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
