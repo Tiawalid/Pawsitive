@@ -9,8 +9,6 @@ import {
 } from "react-native";
 import { SearchBar } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
-import axios from "axios";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -45,32 +43,15 @@ export default function Home() {
     setSearch(text);
   };
 
-  const getSearch = async () => {
-    try {
-      const token = await SecureStore.getItemAsync("userToken");
-      if (token) {
-        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-      }
-      const response = await axios.get(
-        "https://3VQGNMZJRN-dsn.algolia.net/1/indexes/food/query"
-      );
-      console.log(response.data);
-      setSearch(response.data);
-    } catch (error) {
-      console.error("Error fetching search results: ", error);
-    }
-  };
-
-  useEffect(() => {
-    getSearch();
-  }, []);
-
   const handleCardPress = (item) => {
     if (item.text === "Petshops") {
       navigation.navigate("PetShops");
     }
     if (item.text === "Vets") {
       navigation.navigate("Vets");
+    }
+    if (item.text === "PetChips") {
+      navigation.navigate("Chips");
     }
   };
 
@@ -90,15 +71,6 @@ export default function Home() {
           <Image
             source={require("../../assets/images/logo.png")}
             style={styles.logo}
-          />
-        </View>
-        <View style={styles.searchContainer}>
-          <SearchBar
-            placeholder="What are you looking for?"
-            onChangeText={updateSearch}
-            value={search}
-            containerStyle={styles.searchBarContainer}
-            inputContainerStyle={styles.searchInputContainer}
           />
         </View>
       </View>
@@ -133,25 +105,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     height: 100,
+    marginTop: 20,
   },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 0,
-  },
-  searchBarContainer: {
-    backgroundColor: "transparent",
-    borderBottomColor: "transparent",
-    borderTopColor: "transparent",
-    flex: 1,
-    marginTop: 80,
-    marginBottom: 10,
-  },
-  searchInputContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    height: 40,
-  },
+
   content: {
     flex: 1,
     paddingHorizontal: 16,

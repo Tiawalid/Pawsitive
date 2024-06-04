@@ -85,8 +85,7 @@ const SignUpForm = ({ navigation, loggedIn }) => {
         Syndicatecard,
         password: Password,
         gender: "male",
-        role:
-          type == "pet owner" ? "petOwner" : type == "pet vet" ? "vet" : "shop",
+        role: "petOwner",
       })
       .then(async (response) => {
         console.log(response.data);

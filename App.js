@@ -19,6 +19,7 @@ import Debitcard from "./src/screens/Debitcard";
 import Orderplaced from "./src/screens/Orderplaced";
 import Settings from "./src/screens/Settings";
 import MyChip from "./src/screens/MyChip";
+import Chips from "./src/screens/Chips";
 
 import * as SecureStore from "expo-secure-store";
 
@@ -207,6 +208,11 @@ const App = () => {
               <Stack.Screen
                 name="MyChip"
                 component={MyChip}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Chips"
+                component={Chips}
                 options={{ headerShown: false }}
               />
             </>
