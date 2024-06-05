@@ -1,126 +1,201 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
-const Chips = () => {
+export default function Home() {
   const navigation = useNavigation();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handlesubscribeButton = () => {
-    navigation.navigate("Checkout");
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const token = await SecureStore.getItemAsync("userToken");
+        if (token) {
+          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+        } else {
+          console.error("No token found");
+        }
+      } catch (error) {
+        console.error("Error getting token:", error);
+      }
+    };
+
+    const fetchData = async () => {
+      await getToken();
+      try {
+        const response = await axios.get(
+          "https://pawsitive-c80s.onrender.com/api/new/chip"
+        );
+        if (response.data && Array.isArray(response.data)) {
+          const formattedItems = response.data.map((item, index) => ({
+            id: index + 1,
+            text: item.name,
+            price: `${item.price_month} L.E./month or ${item.price_year}/year`,
+            features: item.features,
+          }));
+          setItems(formattedItems);
+        } else {
+          setItems([]);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching search results: ", error);
+        setItems([]);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleSubscriptionPress = (item) => {
+    navigation.navigate("Checkout", { subscriptionType: item.text });
   };
 
-  return (
-    <View style={styles.container}>
-      <Image
-        source={require("../../assets/images/logo.png")}
-        style={styles.logo}
-      />
-      <View style={styles.planContainer}>
-        <View style={styles.plan}>
-          <Text style={styles.saveText}>Save 20%</Text>
-          <Text style={styles.planTitle}>Yearly Pro</Text>
-          <Text style={styles.planPrice}>$48/year</Text>
-          <Text style={styles.planMonthly}>$4/mo</Text>
-        </View>
-        <View style={styles.plan}>
-          <Text style={styles.planTitle}>Monthly</Text>
-          <Text style={styles.planPrice}>$5/mo</Text>
-        </View>
-      </View>
-      <View style={styles.features}>
-        <Text style={styles.feature}>✔ Real-time location</Text>
-        <Text style={styles.feature}>✔ Mood checker</Text>
-        <Text style={styles.feature}>✔ Health monitor</Text>
-        <Text style={styles.feature}>✔ Reminder</Text>
-      </View>
+  const renderItem = ({ item }) => (
+    <View style={styles.card}>
+      <Text style={styles.text}>{item.text}</Text>
+      <Text style={styles.price}>{item.price}</Text>
+      {item.features &&
+        item.features.map((feature, index) => (
+          <Text key={index} style={styles.feature}>
+            - {feature}
+          </Text>
+        ))}
       <TouchableOpacity
-        style={styles.subscribeButton}
-        onPress={handlesubscribeButton}
+        style={styles.button}
+        onPress={() => handleSubscriptionPress(item)}
       >
-        <Text style={styles.subscribeButtonText}>Subscribe</Text>
+        <Text style={styles.buttonText}>Subscribe</Text>
       </TouchableOpacity>
     </View>
   );
-};
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007BFF" />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Icon name="arrow-back" size={24} color="#000" />
+        </TouchableOpacity>
+        <View style={styles.logoContainer}>
+          <Image
+            source={require("../../assets/images/logo.png")}
+            style={styles.logo}
+          />
+        </View>
+      </View>
+      <View style={styles.content}>
+        <FlatList
+          data={items}
+          keyExtractor={(item) => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
+          contentContainerStyle={styles.cardsContainer}
+        />
+      </View>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ADD8E6",
+  },
+  header: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 50,
+    padding: 16,
+  },
+  backButton: {
+    marginRight: 10,
+    marginTop: 20,
   },
   logoContainer: {
-    marginRight: "auto",
+    marginLeft: 10,
   },
   logo: {
-    width: 120,
+    width: 100,
     height: 100,
-    marginBottom: 20,
+    marginTop: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#00A0FF",
-    marginBottom: 20,
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingBottom: 10,
   },
-  planContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    paddingHorizontal: 20,
-  },
-  plan: {
-    backgroundColor: "#E0F7FA",
-    padding: 20,
-    borderRadius: 10,
+  cardsContainer: {
     alignItems: "center",
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 20,
+    marginBottom: 50,
+    width: 250,
+    height: 200,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
     marginHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  saveText: {
-    backgroundColor: "#00A0FF",
-    color: "#FFF",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  planTitle: {
-    fontSize: 18,
+  text: {
     fontWeight: "bold",
-    color: "#333",
+    textAlign: "center",
     marginBottom: 5,
   },
-  planPrice: {
+  price: {
     fontSize: 16,
     color: "#333",
-  },
-  planMonthly: {
-    fontSize: 14,
-    color: "#888",
-    marginBottom: 10,
-  },
-  features: {
-    marginTop: 40,
+    textAlign: "center",
+    marginBottom: 5,
   },
   feature: {
     fontSize: 14,
-    color: "#333",
-    marginVertical: 2,
+    color: "#555",
+    textAlign: "center",
   },
-  subscribeButton: {
-    backgroundColor: "#00A0FF",
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 25,
-    marginTop: 40,
+  button: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#007BFF",
+    borderRadius: 5,
   },
-  subscribeButtonText: {
-    color: "#FFF",
-    fontSize: 16,
+  buttonText: {
+    color: "#fff",
     fontWeight: "bold",
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
-
-export default Chips;

@@ -50,7 +50,7 @@ export default function Home() {
     if (item.text === "Vets") {
       navigation.navigate("Vets");
     }
-    if (item.text === "PetChips") {
+    if (item.text === "Pet Chips") {
       navigation.navigate("Chips");
     }
   };

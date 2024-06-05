@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginBottom: 50, // Added margin bottom to push up the fields
+    marginBottom: 50,
   },
   label: {
     fontSize: 15,
