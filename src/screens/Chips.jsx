@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -6,55 +6,33 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
-import * as SecureStore from "expo-secure-store";
-import axios from "axios";
 
 export default function Home() {
   const navigation = useNavigation();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const getToken = async () => {
-      try {
-        const token = await SecureStore.getItemAsync("userToken");
-        if (token) {
-          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-          console.log("Token set in headers");
-        } else {
-          console.error("No token found");
-        }
-      } catch (error) {
-        console.error("Error getting token:", error);
-      }
-    };
-
-    const fetchData = async () => {
-      await getToken();
-      try {
-        const response = await axios.get(
-          "https://pawsitive-c80s.onrender.com/api/get/chip"
-        );
-        console.log("Data fetched: ", response.data);
-       
-        if (Array.isArray(response.data)) {
-          setItems(response.data);
-        } else {
-          console.error("Unexpected data format:", response.data);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const [items] = useState([
+    {
+      id: 1,
+      text: "Basic Chip",
+      price: "300 L.E./month or 3,168/year",
+      features: ["Real time location"],
+    },
+    {
+      id: 2,
+      text: "Pro Chip",
+      price: "370 L.E./month or 3,907/year",
+      features: ["Real time location", "Health monitoring"],
+    },
+    {
+      id: 3,
+      text: "Premium Chip",
+      price: "450 L.E./month or 4,752/year",
+      features: ["Real time location", "Health monitoring", "Mood checker"],
+    },
+  ]);
 
   const handleSubscriptionPress = (item) => {
     navigation.navigate("Checkout", { subscriptionType: item.text });
@@ -79,14 +57,6 @@ export default function Home() {
     </View>
   );
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007BFF" />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -106,7 +76,7 @@ export default function Home() {
       <View style={styles.content}>
         <FlatList
           data={items}
-          keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
+          keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
           contentContainerStyle={styles.cardsContainer}
@@ -188,10 +158,5 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

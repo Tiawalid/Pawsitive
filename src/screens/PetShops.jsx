@@ -22,7 +22,6 @@ export default function PetShops() {
   };
 
   const handleMyCartPress = () => {
-    console.log("Navigating to Mycart");
     navigation.navigate("Mycart");
   };
 
@@ -64,7 +63,6 @@ export default function PetShops() {
           "https://pawsitive-c80s.onrender.com/api/get/product"
         );
       }
-      console.log(response.data);
       setItems(response.data);
     } catch (error) {
       console.error(`Error fetching ${category} items: `, error);
@@ -91,7 +89,6 @@ export default function PetShops() {
       const response = await axios.get(
         "https://3VQGNMZJRN-dsn.algolia.net/1/indexes/food/query"
       );
-      console.log(response.data);
       setSearch(response.data);
     } catch (error) {
       console.error("Error fetching search results: ", error);
@@ -102,12 +99,23 @@ export default function PetShops() {
     handleAllProductsSelect();
   }, []);
 
-  const handleAddToCart = (item) => {
-    console.log("Adding item to cart:", item);
+  const handleAddToCart = async (item) => {
+    await getToken();
+    try {
+      const response = await axios.post(
+        "https://pawsitive-c80s.onrender.com/api/new/cart",
+        {
+          product_id: item.id,
+          quantity: 1,
+        }
+      );
+      console.log("Item added to cart:", response.data);
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
+    }
   };
 
   const handleCardPress = (item) => {
-    console.log("Card clicked:", item);
     navigation.navigate("Productdetails", { item });
   };
 

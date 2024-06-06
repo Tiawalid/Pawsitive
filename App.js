@@ -22,7 +22,8 @@ import MyChip from "./src/screens/MyChip";
 import Chips from "./src/screens/Chips";
 import Access from "./src/screens/Access";
 import language from "./src/screens/language";
-
+import Mood from "./src/screens/Mood";
+import PetLocation from "./src/screens/Location";
 import * as SecureStore from "expo-secure-store";
 
 const Stack = createNativeStackNavigator();
@@ -217,7 +218,18 @@ const App = () => {
                 component={Chips}
                 options={{ headerShown: false }}
               />
-               <Stack.Screen
+              <Stack.Screen
+                name="Mood"
+                component={Mood}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Location"
+                component={PetLocation}
+                options={{ headerShown: false }}
+              />
+
+              <Stack.Screen
                 name="Access"
                 component={Access}
                 options={{ headerShown: false }}

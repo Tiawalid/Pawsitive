@@ -5,9 +5,13 @@ import { useNavigation } from "@react-navigation/native";
 export default function MyChip() {
   const navigation = useNavigation();
 
-  const handleMoodCheckerPress = () => {};
+  const handleMoodCheckerPress = () => {
+    navigation.navigate("Mood");
+  };
 
-  const handleRealTimeLocationPress = () => {};
+  const handleRealTimeLocationPress = () => {
+    navigation.navigate("Location");
+  };
 
   const handleHealthMonitoringPress = () => {};
 
