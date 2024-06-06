@@ -15,7 +15,7 @@ const settingsOptions = [
   { icon: "lock-outline", label: "Access and permission", action: "access" },
   { icon: "language", label: "Language settings", action: "language" },
   { icon: "shield-outline", label: "Data and privacy", action: "privacy" },
-  { icon: "assignment-turned-in", label: "Finished Orders" },
+  { icon: "assignment-turned-in", label: "Finished Orders", action: "orders" },
   { icon: "backup", label: "Backup and recovery options" },
   { icon: "headset-mic", label: "Customer Support" },
   { icon: "logout", label: "Log out", action: "logout" },
@@ -34,6 +34,8 @@ const Settings = ({ logout }) => {
       navigation.navigate("Language");
     } else if (action === "privacy") {
       navigation.navigate("Privacy");
+    } else if (action === "orders") {
+      navigation.navigate("Orders");
     }
   };
 
