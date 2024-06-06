@@ -36,9 +36,7 @@ const SettingsScreen = () => {
           <Text style={styles.languageText}>العربية</Text>
           <Text style={styles.languageSubText}>Arabic</Text>
         </View>
-        <TouchableOpacity style={styles.addLanguageButton}>
-          <Text style={styles.addLanguageText}>Add Language...</Text>
-        </TouchableOpacity>
+        
         <Text style={styles.sectionSubHeader}>Apps and websites will use the first language in this list that they support.</Text>
         {settingsOptions.map((option, index) => (
           <View key={index} style={styles.option}>
@@ -61,7 +59,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor:"#ADD8E6",
     paddingTop: 20,
   },
   header: {
@@ -69,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingBottom: 8,
-    backgroundColor: '#000',
+    backgroundColor: "#ADD8E6",
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },
@@ -81,18 +79,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
+    marginTop: 50,
   },
   editButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
+    marginTop: 50,
   },
   editButtonText: {
     color: '#1E90FF',
     fontSize: 16,
+    
   },
   scrollViewContent: {
     paddingVertical: 20,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: "#ADD8E6",
   },
   sectionHeader: {
     paddingHorizontal: 16,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   languageOption: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: "#ADD8E6",
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   addLanguageButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: "#ADD8E6",
   },
   addLanguageText: {
     fontSize: 16,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 20,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: "#ADD8E6",
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 20,
-    backgroundColor: '#2C2C2E',
+    backgroundColor: "#ADD8E6",
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },

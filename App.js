@@ -22,6 +22,8 @@ import MyChip from "./src/screens/MyChip";
 import Chips from "./src/screens/Chips";
 import Access from "./src/screens/Access";
 import language from "./src/screens/language";
+import Privacy from "./src/screens/Privacy";
+import Orders from "./src/screens/Orders";
 
 import * as SecureStore from "expo-secure-store";
 
@@ -225,6 +227,16 @@ const App = () => {
               <Stack.Screen
                 name="language"
                 component={language}
+                options={{ headerShown: false }}
+              />
+               <Stack.Screen
+                name="Privacy"
+                component={Privacy}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Orders"
+                component={Orders}
                 options={{ headerShown: false }}
               />
             </>

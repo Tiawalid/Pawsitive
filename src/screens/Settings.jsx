@@ -14,7 +14,7 @@ import * as SecureStore from "expo-secure-store";
 const settingsOptions = [
   { icon: "lock-outline", label: "Access and permission", action: "access" },
   { icon: "language", label: "Language settings", action: "language" },
-  { icon: "shield-outline", label: "Data and privacy" },
+  { icon: "shield-outline", label: "Data and privacy", action: "privacy" },
   { icon: "assignment-turned-in", label: "Finished Orders" },
   { icon: "backup", label: "Backup and recovery options" },
   { icon: "headset-mic", label: "Customer Support" },
@@ -31,7 +31,9 @@ const Settings = ({ logout }) => {
     } else if (action === "access") {
       navigation.navigate("Access");
     } else if (action === "language") {
-      navigation.navigate("language");
+      navigation.navigate("Language");
+    } else if (action === "privacy") {
+      navigation.navigate("Privacy");
     }
   };
 
@@ -53,7 +55,7 @@ const Settings = ({ logout }) => {
 
       <View style={styles.profileSection}>
         <Image
-          source={require("../../assets/images/Dogprofile.jpg")} 
+          source={require("../../assets/images/Dogprofile.jpg")}
           style={styles.profileImage}
         />
         <View style={styles.profileDetails}>
