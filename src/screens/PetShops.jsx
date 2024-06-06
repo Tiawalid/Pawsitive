@@ -103,11 +103,7 @@ export default function PetShops() {
     await getToken();
     try {
       const response = await axios.post(
-        "https://pawsitive-c80s.onrender.com/api/new/cart",
-        {
-          product_id: item.id,
-          quantity: 1,
-        }
+        "https://pawsitive-c80s.onrender.com/api/new/cart"
       );
       console.log("Item added to cart:", response.data);
     } catch (error) {

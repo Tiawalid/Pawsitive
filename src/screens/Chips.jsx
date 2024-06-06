@@ -9,9 +9,12 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
 export default function Home() {
   const navigation = useNavigation();
+  const [responseMessage, setResponseMessage] = useState("");
 
   const [items] = useState([
     {
@@ -34,8 +37,42 @@ export default function Home() {
     },
   ]);
 
-  const handleSubscriptionPress = (item) => {
-    navigation.navigate("Checkout", { subscriptionType: item.text });
+  const getToken = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      if (token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+        return token;
+      } else {
+        console.error("No token found");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error getting token:", error);
+      return null;
+    }
+  };
+
+  const handleSubscriptionPress = async (item) => {
+    console.log("Subscription button pressed for:", item.text);
+    await getToken();
+    try {
+      const response = await axios.post(
+        "https://pawsitive-c80s.onrender.com/api/new/chip",
+        {
+          chipType: item.text,
+        }
+      );
+      console.log("Chip subscription successful:", response.data);
+
+      navigation.navigate("Checkout", { subscriptionType: item.text });
+    } catch (error) {
+      console.error("Error subscribing to chip:", error);
+      console.log(
+        "Error details:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -158,5 +195,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  responseMessage: {
+    fontSize: 16,
+    color: "#FF0000",
+    textAlign: "center",
+    marginVertical: 10,
   },
 });
