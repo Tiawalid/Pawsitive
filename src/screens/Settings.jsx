@@ -12,13 +12,12 @@ import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 
 const settingsOptions = [
-  { icon: "lock-outline", label: "Access and permission" },
-  { icon: "language", label: "Language settings" },
+  { icon: "lock-outline", label: "Access and permission", action: "access" },
+  { icon: "language", label: "Language settings", action: "language" },
   { icon: "shield-outline", label: "Data and privacy" },
   { icon: "assignment-turned-in", label: "Finished Orders" },
   { icon: "backup", label: "Backup and recovery options" },
   { icon: "headset-mic", label: "Customer Support" },
-  { icon: "bar-chart", label: "Reports and analysis" },
   { icon: "logout", label: "Log out", action: "logout" },
 ];
 
@@ -26,8 +25,14 @@ const Settings = ({ logout }) => {
   const navigation = useNavigation();
 
   const handleOptionPress = async action => {
-    await SecureStore.deleteItemAsync("userToken");
-    logout();
+    if (action === "logout") {
+      await SecureStore.deleteItemAsync("userToken");
+      logout();
+    } else if (action === "access") {
+      navigation.navigate("Access");
+    } else if (action === "language") {
+      navigation.navigate("language");
+    }
   };
 
   return (
@@ -45,6 +50,21 @@ const Settings = ({ logout }) => {
           </View>
         </View>
       </View>
+
+      <View style={styles.profileSection}>
+        <Image
+          source={require("../../assets/images/Dogprofile.jpg")} 
+          style={styles.profileImage}
+        />
+        <View style={styles.profileDetails}>
+          <Text style={styles.profileName}>My Profile</Text>
+          <Text style={styles.profileEmail}>Pet@gmail.com</Text>
+        </View>
+        <TouchableOpacity style={styles.editProfileButton}>
+          <Text style={styles.editProfileText}>EDIT PROFILE</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {settingsOptions.map((option, index) => (
           <TouchableOpacity
@@ -101,6 +121,40 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
   },
+  profileSection: {
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#ADD8E6",
+  },
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  profileDetails: {
+    alignItems: "center",
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  profileEmail: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 10,
+  },
+  editProfileButton: {
+    borderWidth: 1,
+    borderColor: "#0097f2",
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
+  editProfileText: {
+    color: "#0097f2",
+    fontWeight: "bold",
+  },
   scrollViewContent: {
     paddingVertical: 20,
   },
@@ -109,7 +163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 16,
     paddingHorizontal: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#ADD8E6",
     marginBottom: 1,
   },
   optionIcon: {

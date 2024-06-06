@@ -36,27 +36,16 @@ export default function Home() {
       await getToken();
       try {
         const response = await axios.get(
-          "https://pawsitive-c80s.onrender.com/api/new/chip"
+          "https://pawsitive-c80s.onrender.com/api/get/chip"
         );
-        if (response.data && Array.isArray(response.data)) {
-          const formattedItems = response.data.map((item, index) => ({
-            id: index + 1,
-            text: item.name,
-            price: `${item.price_month} L.E./month or ${item.price_year}/year`,
-            features: item.features,
-          }));
-          setItems(formattedItems);
-        } else {
-          setItems([]);
-        }
-        setLoading(false);
+        console.log(response.data);
+        setLoading(false) 
+        // setSearch(response.data);
       } catch (error) {
         console.error("Error fetching search results: ", error);
-        setItems([]);
-        setLoading(false);
       }
     };
-
+    
     fetchData();
   }, []);
 

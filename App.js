@@ -20,6 +20,8 @@ import Orderplaced from "./src/screens/Orderplaced";
 import Settings from "./src/screens/Settings";
 import MyChip from "./src/screens/MyChip";
 import Chips from "./src/screens/Chips";
+import Access from "./src/screens/Access";
+import language from "./src/screens/language";
 
 import * as SecureStore from "expo-secure-store";
 
@@ -213,6 +215,16 @@ const App = () => {
               <Stack.Screen
                 name="Chips"
                 component={Chips}
+                options={{ headerShown: false }}
+              />
+               <Stack.Screen
+                name="Access"
+                component={Access}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="language"
+                component={language}
                 options={{ headerShown: false }}
               />
             </>
