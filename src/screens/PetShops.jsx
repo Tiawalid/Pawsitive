@@ -57,7 +57,7 @@ export default function PetShops() {
         );
       } else if (category === "Chips") {
         response = await axios.get(
-          "https://pawsitive-c80s.onrender.com/api/category/chips"
+          "https://pawsitive-c80s.onrender.com/api/get/chip"
         );
       } else {
         response = await axios.get(

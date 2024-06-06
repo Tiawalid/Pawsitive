@@ -24,6 +24,7 @@ export default function Home() {
         const token = await SecureStore.getItemAsync("userToken");
         if (token) {
           axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+          console.log("Token set in headers");
         } else {
           console.error("No token found");
         }
@@ -38,14 +39,20 @@ export default function Home() {
         const response = await axios.get(
           "https://pawsitive-c80s.onrender.com/api/get/chip"
         );
-        console.log(response.data);
-        setLoading(false) 
-        // setSearch(response.data);
+        console.log("Data fetched: ", response.data);
+       
+        if (Array.isArray(response.data)) {
+          setItems(response.data);
+        } else {
+          console.error("Unexpected data format:", response.data);
+        }
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching search results: ", error);
+        console.error("Error fetching data: ", error);
+        setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -99,7 +106,7 @@ export default function Home() {
       <View style={styles.content}>
         <FlatList
           data={items}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
           contentContainerStyle={styles.cardsContainer}
