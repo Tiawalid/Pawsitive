@@ -14,24 +14,26 @@ import * as SecureStore from "expo-secure-store";
 const settingsOptions = [
   { icon: "lock-outline", label: "Access and permission", action: "access" },
   { icon: "language", label: "Language settings", action: "language" },
-  { icon: "shield-outline", label: "Data and privacy" },
-  { icon: "assignment-turned-in", label: "Finished Orders" },
-  { icon: "backup", label: "Backup and recovery options" },
-  { icon: "headset-mic", label: "Customer Support" },
+  { icon: "shield-outline", label: "Data and privacy", action: "privacy" },
+  {
+    icon: "assignment-turned-in",
+    label: "Finished Orders",
+    action: "finishedOrders",
+  },
+  { icon: "backup", label: "Backup and recovery options", action: "backup" },
+  { icon: "headset-mic", label: "Customer Support", action: "Customersupport" },
   { icon: "logout", label: "Log out", action: "logout" },
 ];
 
 const Settings = ({ logout }) => {
   const navigation = useNavigation();
 
-  const handleOptionPress = async action => {
+  const handleOptionPress = async (action) => {
     if (action === "logout") {
       await SecureStore.deleteItemAsync("userToken");
       logout();
-    } else if (action === "access") {
-      navigation.navigate("Access");
-    } else if (action === "language") {
-      navigation.navigate("language");
+    } else {
+      navigation.navigate(action);
     }
   };
 
@@ -53,7 +55,7 @@ const Settings = ({ logout }) => {
 
       <View style={styles.profileSection}>
         <Image
-          source={require("../../assets/images/Dogprofile.jpg")} 
+          source={require("../../assets/images/Dogprofile.jpg")}
           style={styles.profileImage}
         />
         <View style={styles.profileDetails}>
