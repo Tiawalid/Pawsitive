@@ -60,6 +60,12 @@ export default function Home() {
       <View>
         <Image source={item.image} style={styles.image} />
         <Text style={styles.text}>{item.text}</Text>
+        {(item.text === "Pet Lover Community" ||
+          item.text === "Tips and Blogs") && (
+          <View style={styles.comingSoonContainer}>
+            <Text style={styles.comingSoonText}>Coming Soon</Text>
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -141,5 +147,19 @@ const styles = StyleSheet.create({
   text: {
     fontWeight: "bold",
     textAlign: "center",
+  },
+  comingSoonContainer: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    zIndex: 1,
+  },
+  comingSoonText: {
+    color: "#fff",
+    fontSize: 12,
   },
 });
