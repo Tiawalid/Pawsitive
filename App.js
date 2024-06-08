@@ -29,6 +29,10 @@ import Customersupport from "./src/screens/Customersupport";
 import Mood from "./src/screens/Mood";
 import PetLocation from "./src/screens/Location";
 import * as SecureStore from "expo-secure-store";
+import HomeVet from "./src/screens/HomeVet";
+import VetBooked from "./src/screens/VetBooked";
+import VetPatients from "./src/screens/VetPatients";
+import VetStatistics from "./src/screens/VetStatistics";
 
 const Stack = createNativeStackNavigator();
 
@@ -261,6 +265,26 @@ const App = () => {
               <Stack.Screen
                 name="Customersupport"
                 component={Customersupport}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="HomeVet"
+                component={HomeVet}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="VetBooked"
+                component={VetBooked}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="VetPatients"
+                component={VetPatients}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="VetStatistics"
+                component={VetStatistics}
                 options={{ headerShown: false }}
               />
             </>

@@ -12,9 +12,9 @@ import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 
 const settingsOptions = [
-  { icon: "lock-outline", label: "Access and permission", action: "access" },
+  { icon: "lock-outline", label: "Access and permission", action: "Access" },
   { icon: "language", label: "Language settings", action: "language" },
-  { icon: "shield-outline", label: "Data and privacy", action: "privacy" },
+  { icon: "shield-outline", label: "Data and privacy", action: "Privacy" },
   {
     icon: "assignment-turned-in",
     label: "Finished Orders",

@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { SearchBar } from "@rneui/themed";
 import { Appbar } from "react-native-paper";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
@@ -60,29 +59,6 @@ export default function Home({ navigation }) {
     },
   ];
 
-  const [search, setSearch] = useState("");
-
-  const updateSearch = (text) => {
-    setSearch(text);
-  };
-
-  const getSearch = async () => {
-    await getToken();
-    try {
-      const response = await axios.get(
-        "https://3VQGNMZJRN-dsn.algolia.net/1/indexes/food/query"
-      );
-      console.log(response.data);
-      setSearch(response.data);
-    } catch (error) {
-      console.error("Error fetching search results: ", error);
-    }
-  };
-
-  useEffect(() => {
-    getSearch();
-  }, []);
-
   const handleCardPress = (item) => {
     if (item.text === "Chat with a vet") {
       navigation.navigate("Chatbot");
@@ -110,15 +86,6 @@ export default function Home({ navigation }) {
           <Image
             source={require("../../assets/images/logo.png")}
             style={styles.logo}
-          />
-        </View>
-        <View style={styles.searchContainer}>
-          <SearchBar
-            placeholder="What are you looking for?"
-            onChangeText={updateSearch}
-            value={search}
-            containerStyle={styles.searchBarContainer}
-            inputContainerStyle={styles.searchInputContainer}
           />
         </View>
       </View>
@@ -156,23 +123,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 100,
     height: 100,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 0,
-  },
-  searchBarContainer: {
-    backgroundColor: "transparent",
-    borderBottomColor: "transparent",
-    borderTopColor: "transparent",
-    flex: 1,
-    marginTop: 80,
-  },
-  searchInputContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    height: 40,
   },
   content: {
     paddingHorizontal: 16,
