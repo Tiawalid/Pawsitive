@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   languageText: {
     fontSize: 16,
-    color: '#fff',
+    color: '#000',
   },
   languageSubText: {
     fontSize: 12,
@@ -121,10 +121,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: "#ADD8E6",
   },
-  addLanguageText: {
-    fontSize: 16,
-    color: '#1E90FF',
-  },
+ 
   sectionSubHeader: {
     paddingHorizontal: 16,
     fontSize: 12,
@@ -143,7 +140,7 @@ const styles = StyleSheet.create({
   },
   optionLabel: {
     fontSize: 16,
-    color: '#fff',
+    color: '#000',
   },
   optionValue: {
     fontSize: 16,

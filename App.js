@@ -24,6 +24,9 @@ import Access from "./src/screens/Access";
 import language from "./src/screens/language";
 import Privacy from "./src/screens/Privacy";
 import Orders from "./src/screens/Orders";
+import Backup from "./src/screens/Backup";
+import Customersupport from "./src/screens/Customersupport";
+
 
 import * as SecureStore from "expo-secure-store";
 
@@ -237,6 +240,16 @@ const App = () => {
               <Stack.Screen
                 name="Orders"
                 component={Orders}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Backup"
+                component={Backup}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Customersupport"
+                component={Customersupport}
                 options={{ headerShown: false }}
               />
             </>

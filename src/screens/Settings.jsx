@@ -12,30 +12,24 @@ import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 
 const settingsOptions = [
-  { icon: "lock-outline", label: "Access and permission", action: "access" },
-  { icon: "language", label: "Language settings", action: "language" },
-  { icon: "shield-outline", label: "Data and privacy", action: "privacy" },
-  { icon: "assignment-turned-in", label: "Finished Orders", action: "orders" },
-  { icon: "backup", label: "Backup and recovery options" },
-  { icon: "headset-mic", label: "Customer Support" },
+  { icon: "lock-outline", label: "Access and permission", action: "Access" },
+  { icon: "language", label: "Language settings", action: "Language" },
+  { icon: "shield-outline", label: "Data and privacy", action: "Privacy" },
+  { icon: "assignment-turned-in", label: "Finished Orders", action: "Orders" },
+  { icon: "backup", label: "Backup and recovery options", action: "Backup" },
+  { icon: "headset-mic", label: "Customer Support", action: "CustomerSupport" },
   { icon: "logout", label: "Log out", action: "logout" },
 ];
 
-const Settings = ({ logout }) => {
+const SettingsScreen = ({ logout }) => {
   const navigation = useNavigation();
 
-  const handleOptionPress = async action => {
+  const handleOptionPress = async (action) => {
     if (action === "logout") {
       await SecureStore.deleteItemAsync("userToken");
       logout();
-    } else if (action === "access") {
-      navigation.navigate("Access");
-    } else if (action === "language") {
-      navigation.navigate("Language");
-    } else if (action === "privacy") {
-      navigation.navigate("Privacy");
-    } else if (action === "orders") {
-      navigation.navigate("Orders");
+    } else if (action) {
+      navigation.navigate(action);
     }
   };
 
@@ -150,13 +144,13 @@ const styles = StyleSheet.create({
   },
   editProfileButton: {
     borderWidth: 1,
-    borderColor: "#0097f2",
+    borderColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
   editProfileText: {
-    color: "#0097f2",
+    color: "#000",
     fontWeight: "bold",
   },
   scrollViewContent: {
@@ -179,4 +173,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default SettingsScreen;

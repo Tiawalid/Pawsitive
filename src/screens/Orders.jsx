@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import the navigation hook
 
 const orders = [
   {
@@ -61,6 +62,7 @@ const orders = [
 ];
 
 const OrdersScreen = () => {
+  const navigation = useNavigation(); // Use the navigation hook
   const [selectedTab, setSelectedTab] = useState('Completed');
 
   const renderOrderItem = ({ item }) => (
@@ -78,7 +80,12 @@ const OrdersScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>My Orders</Text>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.goBackButton}>
+          <Text style={styles.goBackButtonText}>Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.header}>My Orders</Text>
+      </View>
 
       <View style={styles.tabs}>
         <TouchableOpacity
@@ -107,21 +114,6 @@ const OrdersScreen = () => {
         keyExtractor={item => item.id}
         contentContainerStyle={styles.orderList}
       />
-
-      <View style={styles.bottomNav}>
-        <TouchableOpacity style={styles.navButton}>
-          <Text style={styles.navButtonText}>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Text style={styles.navButtonText}>Orders</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Text style={styles.navButtonText}>Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton}>
-          <Text style={styles.navButtonText}>More</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -129,13 +121,25 @@ const OrdersScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#ADD8E6",
     padding: 16,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  goBackButton: {
+    marginRight: 16,
+  },
+  goBackButtonText: {
+    color: '#007BFF',
+    fontSize: 16,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginTop: 60,
   },
   tabs: {
     flexDirection: 'row',
@@ -191,19 +195,6 @@ const styles = StyleSheet.create({
   },
   orderSchedule: {
     color: '#555',
-  },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
-  },
-  navButton: {
-    alignItems: 'center',
-  },
-  navButtonText: {
-    color: '#007BFF',
   },
 });
 
