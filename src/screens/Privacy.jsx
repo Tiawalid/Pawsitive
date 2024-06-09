@@ -1,6 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Icon } from "react-native-elements";
 
 const PrivacyScreen = () => {
   const navigation = useNavigation();
@@ -8,31 +9,36 @@ const PrivacyScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Back</Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Icon name="arrow-back" type="ionicon" size={24} color="#007AFF" />
         </TouchableOpacity>
       </View>
+
+      <Text style={styles.title}>Data & Privacy</Text>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Data & Privacy</Text>
         <Text style={styles.description}>
-        Welcome to Pawsitive, where your privacy is our priority. 
+          Welcome to Pawsitive, where your privacy is our priority.
         </Text>
         <Text style={styles.description}>
-        We collect personal information, pet details, and usage data to improve our services and personalize your experience. 
+          We collect personal information, pet details, and usage data to
+          improve our services and personalize your experience.
         </Text>
         <Text style={styles.description}>
-        Your data is securely protected and only shared with trusted third parties under confidentiality agreements. You have the right to access, update, or delete your information and withdraw consent for data processing. Any policy changes will be communicated via the app or email. For questions, contact us. Thank you for trusting us with your pet’s care.
+          Your data is securely protected and only shared with trusted third
+          parties under confidentiality agreements. You have the right to
+          access, update, or delete your information and withdraw consent for
+          data processing. Any policy changes will be communicated via the app
+          or email. For questions, contact us. Thank you for trusting us with
+          your pet’s care.
         </Text>
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.continueButton}>
-          <Text style={styles.continueButtonText}>Continue</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.learnMoreButton}>
-          <Text style={styles.learnMoreText}>Learn More</Text>
-        </TouchableOpacity>
+        <Text style={styles.contactText}>
+          Contact us via email:
+          <Text style={styles.emailText}> Pawsitive@gmail.com</Text>
+        </Text>
       </View>
     </View>
   );
@@ -45,59 +51,38 @@ const styles = StyleSheet.create({
     backgroundColor: "#ADD8E6",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 60,
   },
   backButton: {
     marginRight: 10,
   },
-  backButtonText: {
-    fontSize: 18,
-    color: '#007AFF',
-  },
-  content: {
-    alignItems: 'center',
-    paddingHorizontal: 16,
-  },
-  icon: {
-    width: 60,
-    height: 60,
-    marginBottom: 20,
-  },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 16,
   },
   description: {
     fontSize: 16,
-    textAlign: 'center',
-    color: '#333',
+    textAlign: "center",
+    color: "#333",
     marginBottom: 16,
   },
-  footer: {
-    marginTop: 'auto',
-    alignItems: 'center',
-  },
-  continueButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  continueButtonText: {
-    color: '#fff',
+  contactText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    textAlign: "center",
+    color: "#333",
+    marginTop: 16,
   },
-  learnMoreButton: {
-    marginBottom: 20,
-  },
-  learnMoreText: {
-    color: '#007AFF',
+  emailText: {
+    color: "#007AFF",
     fontSize: 16,
   },
 });

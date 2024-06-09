@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Image, Platform } from 'react-native';
-import { Appbar } from 'react-native-paper'; 
-import { useNavigation } from '@react-navigation/native'; 
-
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Image,
+  Platform,
+} from "react-native";
+import { Appbar } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -11,17 +20,22 @@ const ForgotPassword = () => {
 
   const navigation = useNavigation();
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     if (!email) {
       setError("Please enter your email address.");
     } else {
-      sendVerificationEmail(email);
-      setSuccessMessage("A password reset link has been sent to your email.");
+      try {
+        const response = await axios.post(
+          "https://pawsitive-c80s.onrender.com/api/forgotPass",
+          { email }
+        );
+        setSuccessMessage("A password reset link has been sent to your email.");
+        setError("");
+      } catch (error) {
+        setError("Failed to send password reset link. Please try again.");
+        setSuccessMessage("");
+      }
     }
-  };
-
-  const sendVerificationEmail = (email) => {
-    
   };
 
   return (
@@ -35,22 +49,32 @@ const ForgotPassword = () => {
           <Appbar.BackAction />
         </TouchableOpacity>
         <View style={styles.logoContainer}>
-          <Image source={require('../../assets/images/logo.png')} style={styles.logo}/>  
+          <Image
+            source={require("../../assets/images/logo.png")}
+            style={styles.logo}
+          />
         </View>
       </View>
 
       <View style={styles.form}>
         <Text style={styles.label}>Enter your email address</Text>
         <TextInput
-          style={[styles.input, { backgroundColor: '#F5F5F5' }]}
+          style={[styles.input, { backgroundColor: "#F5F5F5" }]}
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
-        {successMessage ? <Text style={styles.successMessage}>{successMessage}</Text> : null}
+        {successMessage ? (
+          <Text style={styles.successMessage}>{successMessage}</Text>
+        ) : null}
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleResetPassword}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={handleResetPassword}
+        >
           <Text style={styles.submitButtonText}>Send Verification Email</Text>
         </TouchableOpacity>
       </View>
@@ -66,20 +90,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#ADD8E6",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   logoContainer: {
-    alignItems: 'center',
-    flex: 1, 
+    alignItems: "center",
+    flex: 1,
     marginTop: 20,
   },
   logo: {
     width: 150,
     height: 130,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     marginRight: 50,
   },
   form: {
@@ -98,7 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 10,
     fontWeight: "bold",
-    color: "#0097f2", 
+    color: "#0097f2",
   },
   input: {
     height: 40,
@@ -117,15 +141,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   submitButton: {
-    backgroundColor: '#0097f2',
+    backgroundColor: "#0097f2",
     paddingVertical: 15,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   submitButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

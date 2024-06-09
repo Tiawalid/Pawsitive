@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -7,38 +7,31 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-import { SearchBar } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
   const navigation = useNavigation();
 
   const [items] = useState([
-    { id: 1, text: "Vets", image: require("../../assets/images/vets.jpg") },
+    {
+      id: 1,
+      text: "Booked Appointment",
+      image: require("../../assets/images/booked.png"),
+    },
     {
       id: 2,
-      text: "Petshops",
-      image: require("../../assets/images/Petshops.jpg"),
+      text: "Pending Bookings",
+      image: require("../../assets/images/pending.png"),
     },
     {
       id: 3,
-      text: "Pet Chips",
-      image: require("../../assets/images/Petchips.jpg"),
+      text: "Statistics",
+      image: require("../../assets/images/statistics.webp"),
     },
     {
       id: 4,
-      text: "Pet Lover Community",
-      image: require("../../assets/images/Petlover.jpg"),
-    },
-    {
-      id: 5,
-      text: "Tips and Blogs",
-      image: require("../../assets/images/tipsblogs.jpg"),
-    },
-    {
-      id: 6,
-      text: "Adoption",
-      image: require("../../assets/images/adopt.jpg"),
+      text: "Patients",
+      image: require("../../assets/images/patient.jpeg"),
     },
   ]);
 
@@ -49,14 +42,21 @@ export default function Home() {
   };
 
   const handleCardPress = (item) => {
-    if (item.text === "Petshops") {
-      navigation.navigate("PetShops");
-    }
-    if (item.text === "Vets") {
-      navigation.navigate("Vets");
-    }
-    if (item.text === "Pet Chips") {
-      navigation.navigate("Chips");
+    switch (item.text) {
+      case "Booked Appointment":
+        navigation.navigate("VetBooked");
+        break;
+      case "Pending Bookings":
+        navigation.navigate("VetPending");
+        break;
+      case "Statistics":
+        navigation.navigate("VetStatistics");
+        break;
+      case "Patients":
+        navigation.navigate("VetPatients");
+        break;
+      default:
+        break;
     }
   };
 
@@ -66,8 +66,7 @@ export default function Home() {
         <Image source={item.image} style={styles.image} />
         <Text style={styles.text}>{item.text}</Text>
         {(item.text === "Pet Lover Community" ||
-          item.text === "Tips and Blogs" ||
-          item.text === "Adoption") && (
+          item.text === "Tips and Blogs") && (
           <View style={styles.comingSoonContainer}>
             <Text style={styles.comingSoonText}>Coming Soon</Text>
           </View>

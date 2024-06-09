@@ -5,11 +5,17 @@ import { useNavigation } from "@react-navigation/native";
 export default function MyChip() {
   const navigation = useNavigation();
 
-  const handleMoodCheckerPress = () => {};
+  const handleMoodCheckerPress = () => {
+    navigation.navigate("Mood");
+  };
 
-  const handleRealTimeLocationPress = () => {};
+  const handleRealTimeLocationPress = () => {
+    navigation.navigate("Location");
+  };
 
-  const handleHealthMonitoringPress = () => {};
+  const handleHealthMonitoringPress = () => {
+    navigation.navigate("Health");
+  };
 
   return (
     <View style={styles.container}>
@@ -21,9 +27,9 @@ export default function MyChip() {
           />
         </View>
       </View>
-      <Text style={styles.title}>Hi, hope you're doing great!</Text>
+      <Text style={styles.title}>Hope your pet is doing great!</Text>
       <Text style={styles.subtitle}>
-        You can now use your chip to track your pet and ensure they are safe
+        You can now use your chip to track your pet and ensure their safety
       </Text>
       <View style={styles.content}>
         <TouchableOpacity

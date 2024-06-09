@@ -13,22 +13,26 @@ import * as SecureStore from "expo-secure-store";
 
 const settingsOptions = [
   { icon: "lock-outline", label: "Access and permission", action: "Access" },
-  { icon: "language", label: "Language settings", action: "Language" },
+  { icon: "language", label: "Language settings", action: "language" },
   { icon: "shield-outline", label: "Data and privacy", action: "Privacy" },
-  { icon: "assignment-turned-in", label: "Finished Orders", action: "Orders" },
-  { icon: "backup", label: "Backup and recovery options", action: "Backup" },
-  { icon: "headset-mic", label: "Customer Support", action: "CustomerSupport" },
+  {
+    icon: "assignment-turned-in",
+    label: "Finished Orders",
+    action: "finishedOrders",
+  },
+  { icon: "backup", label: "Backup and recovery options", action: "backup" },
+  { icon: "headset-mic", label: "Customer Support", action: "Customersupport" },
   { icon: "logout", label: "Log out", action: "logout" },
 ];
 
-const SettingsScreen = ({ logout }) => {
+const Settings = ({ logout }) => {
   const navigation = useNavigation();
 
   const handleOptionPress = async (action) => {
     if (action === "logout") {
       await SecureStore.deleteItemAsync("userToken");
       logout();
-    } else if (action) {
+    } else {
       navigation.navigate(action);
     }
   };
@@ -144,13 +148,13 @@ const styles = StyleSheet.create({
   },
   editProfileButton: {
     borderWidth: 1,
-    borderColor: "#fff",
+    borderColor: "#0097f2",
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
   editProfileText: {
-    color: "#000",
+    color: "#0097f2",
     fontWeight: "bold",
   },
   scrollViewContent: {
@@ -173,4 +177,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingsScreen;
+export default Settings;

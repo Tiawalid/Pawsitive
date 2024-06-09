@@ -1,36 +1,40 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
 
-const PrivacyScreen = () => {
+const Customersupport = () => {
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Back</Text>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Icon name="arrow-back" size={24} color="#007AFF" />
         </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.title}>Data & Privacy</Text>
+        <Text style={styles.title}>Customer Support</Text>
         <Text style={styles.description}>
-        At Pawsitive, we know your pets are family.        </Text>
+          At Pawsitive, we know your pets are family.
+        </Text>
         <Text style={styles.description}>
-        Our 24/7 customer support team is here to help with any app issues, pet care advice, or account queries.        </Text>
+          Our 24/7 customer support team is here to help with any app issues,
+          pet care advice, or account queries.
+        </Text>
         <Text style={styles.description}>
-        We're committed to providing quick, efficient solutions to ensure a seamless experience for you and your pets. Your satisfaction is our priority, so don’t hesitate to reach out anytime. We're here to help keep your pets happy and healthy.        </Text>
+          We're committed to providing quick, efficient solutions to ensure a
+          seamless experience for you and your pets. Your satisfaction is our
+          priority, so don’t hesitate to reach out anytime. We're here to help
+          keep your pets happy and healthy.
+        </Text>
       </View>
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.continueButton}>
-          <Text style={styles.continueButtonText}>Continue</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.learnMoreButton}>
-          <Text style={styles.learnMoreText}>Learn More</Text>
-        </TouchableOpacity>
-      </View>
+      <View style={styles.footer}></View>
     </View>
   );
 };
@@ -42,8 +46,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ADD8E6",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 60,
   },
   backButton: {
@@ -51,52 +55,47 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 18,
-    color: '#007AFF',
+    color: "#007AFF",
   },
   content: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingHorizontal: 16,
-  },
-  icon: {
-    width: 60,
-    height: 60,
-    marginBottom: 20,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 16,
   },
   description: {
     fontSize: 16,
-    textAlign: 'center',
-    color: '#333',
+    textAlign: "center",
+    color: "#333",
     marginBottom: 16,
   },
   footer: {
-    marginTop: 'auto',
-    alignItems: 'center',
+    marginTop: "auto",
+    alignItems: "center",
   },
   continueButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 8,
     marginBottom: 16,
   },
   continueButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   learnMoreButton: {
     marginBottom: 20,
   },
   learnMoreText: {
-    color: '#007AFF',
+    color: "#007AFF",
     fontSize: 16,
   },
 });
 
-export default PrivacyScreen;
+export default Customersupport;

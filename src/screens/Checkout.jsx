@@ -9,13 +9,16 @@ import {
   TextInput,
   Modal,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Appbar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const Checkout = () => {
   const totalPrice = 0;
   const navigation = useNavigation();
+  const { params } = useRoute();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -55,137 +58,140 @@ const Checkout = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Appbar.Header style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Image
-            source={require("../../assets/images/logo.png")}
-            style={styles.logo}
-          />
-        </View>
-      </Appbar.Header>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.heading}>Checkout</Text>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your name"
-            value={name}
-            onChangeText={setName}
-          />
-        </View>
-
-        <Text style={styles.label}>Governorate</Text>
-        <TouchableOpacity
-          style={styles.input}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text>{governorate}</Text>
-        </TouchableOpacity>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Street Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Street Name"
-            value={streetName}
-            onChangeText={setStreetName}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Building Number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Building Number"
-            value={buildingNumber}
-            onChangeText={setBuildingNumber}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Floor Number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Floor Number"
-            value={floorNumber}
-            onChangeText={setFloorNumber}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Apartment Number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Apartment Number"
-            value={apartmentNumber}
-            onChangeText={setApartmentNumber}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Payment Method</Text>
-          <View style={styles.paymentButtons}>
-            <TouchableOpacity
-              style={[
-                styles.paymentButton,
-                paymentMethod === "cash" && styles.selectedPaymentButton,
-              ]}
-              onPress={() => setPaymentMethod("cash")}
-            >
-              <Text style={styles.paymentButtonText}>Cash</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.paymentButton,
-                paymentMethod === "debit" && styles.selectedPaymentButton,
-              ]}
-              onPress={() => {
-                setPaymentMethod("debit");
-                navigation.navigate("Debitcard");
-              }}
-            >
-              <Text style={styles.paymentButtonText}>Debit Card</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.totalText}>
-            Total Price: ${totalPrice.toFixed(2)}
-          </Text>
-          <TouchableOpacity
-            style={styles.placeOrderButton}
-            onPress={handleCheckout}
-          >
-            <Text style={styles.placeOrderButtonText}>Confirm</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={governorates}
-              renderItem={renderGovernorateItem}
-              keyExtractor={(item) => item}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <Appbar.Header style={styles.header}>
+          <View style={styles.logoContainer}>
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+            <Image
+              source={require("../../assets/images/logo.png")}
+              style={styles.logo}
             />
           </View>
-        </View>
-      </Modal>
-    </View>
+        </Appbar.Header>
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.heading}>Checkout</Text>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your name"
+              value={name}
+              onChangeText={setName}
+            />
+          </View>
+
+          <Text style={styles.label}>Governorate</Text>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setModalVisible(true)}
+          >
+            <Text>{governorate}</Text>
+          </TouchableOpacity>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Street Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Street Name"
+              value={streetName}
+              onChangeText={setStreetName}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Building Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Building Number"
+              value={buildingNumber}
+              onChangeText={setBuildingNumber}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Floor Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Floor Number"
+              value={floorNumber}
+              onChangeText={setFloorNumber}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Apartment Number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Apartment Number"
+              value={apartmentNumber}
+              onChangeText={setApartmentNumber}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Payment Method</Text>
+            <View style={styles.paymentButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.paymentButton,
+                  paymentMethod === "cash" && styles.selectedPaymentButton,
+                ]}
+                onPress={() => setPaymentMethod("cash")}
+              >
+                <Text style={styles.paymentButtonText}>Cash</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.paymentButton,
+                  paymentMethod === "debit" && styles.selectedPaymentButton,
+                ]}
+                onPress={() => {
+                  setPaymentMethod("debit");
+                  navigation.navigate("Debitcard");
+                }}
+              >
+                <Text style={styles.paymentButtonText}>Debit Card</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.totalText}>Total Price: ${params.total}</Text>
+            <TouchableOpacity
+              style={styles.placeOrderButton}
+              onPress={handleCheckout}
+            >
+              <Text style={styles.placeOrderButtonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+
+        <Modal
+          visible={modalVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={governorates}
+                renderItem={renderGovernorateItem}
+                keyExtractor={(item) => item}
+              />
+            </View>
+          </View>
+        </Modal>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -230,7 +236,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    backgroundColor: "#ADD8E6",
+    backgroundColor: "#fff",
   },
   paymentButtons: {
     flexDirection: "row",

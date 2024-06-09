@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -6,7 +6,7 @@ import {
   StyleSheet,
   FlatList,
   Image,
-  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -15,77 +15,137 @@ import axios from "axios";
 
 export default function Home() {
   const navigation = useNavigation();
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const [prices, setPrices] = useState([]);
+  const [index, setIndex] = useState(0);
+  const [items] = useState([
+    {
+      id: 1,
+      text: "Basic Chip",
+      price: "300 L.E./month or 3,168/year",
+      features: ["Real time location"],
+    },
+    {
+      id: 2,
+      text: "Pro Chip",
+      price: "370 L.E./month or 3,907/year",
+      features: ["Real time location", "Health monitoring"],
+    },
+    {
+      id: 3,
+      text: "Premium Chip",
+      price: "450 L.E./month or 4,752/year",
+      features: ["Real time location", "Health monitoring", "Mood checker"],
+    },
+  ]);
 
-  useEffect(() => {
-    const getToken = async () => {
-      try {
-        const token = await SecureStore.getItemAsync("userToken");
-        if (token) {
-          axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-          console.log("Token set in headers");
-        } else {
-          console.error("No token found");
-        }
-      } catch (error) {
-        console.error("Error getting token:", error);
+  const getToken = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      if (token) {
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+        return token;
+      } else {
+        console.error("No token found");
+        return null;
       }
-    };
-
-    const fetchData = async () => {
-      await getToken();
-      try {
-        const response = await axios.get(
-          "https://pawsitive-c80s.onrender.com/api/get/chip"
-        );
-        console.log("Data fetched: ", response.data);
-       
-        if (Array.isArray(response.data)) {
-          setItems(response.data);
-        } else {
-          console.error("Unexpected data format:", response.data);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleSubscriptionPress = (item) => {
-    navigation.navigate("Checkout", { subscriptionType: item.text });
+    } catch (error) {
+      console.error("Error getting token:", error);
+      return null;
+    }
   };
 
-  const renderItem = ({ item }) => (
+  const fetchProducts = async () => {
+    await getToken();
+    try {
+      const response = await axios.get(
+        "https://pawsitive-c80s.onrender.com/api/products"
+      );
+
+      console.log(response.data.data);
+      setProducts(response.data.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  const fetPrices = async () => {
+    await getToken();
+    try {
+      const response = await axios.get(
+        "https://pawsitive-c80s.onrender.com/api/PricesProducts"
+      );
+
+      setPrices(response.data.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const handleSubscriptionPress = async (item) => {
+    console.log("Subscription button pressed for:", item.text);
+    await getToken();
+    try {
+      const response = await axios.post(
+        "https://pawsitive-c80s.onrender.com/api/new/chip",
+        {
+          chipType: item.text,
+        }
+      );
+      console.log("Chip subscription successful:", response.data);
+      navigation.navigate("Checkout", { subscriptionType: item.text });
+    } catch (error) {
+      console.error("Error subscribing to chip:", error.response);
+      console.log(
+        "Error details:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+    fetPrices();
+  }, []);
+
+  const renderProductItem = ({ item, i }) => (
     <View style={styles.card}>
-      <Text style={styles.text}>{item.text}</Text>
-      <Text style={styles.price}>{item.price}</Text>
-      {item.features &&
-        item.features.map((feature, index) => (
-          <Text key={index} style={styles.feature}>
-            - {feature}
-          </Text>
-        ))}
+      <Image source={{ uri: item.imageUrl }} style={styles.image} />
+      <Text style={styles.text}>{item.name}</Text>
+      <Text style={styles.price}>{item.priceAmount * 100} EGP</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => handleSubscriptionPress(item)}
+        onPress={() => console.log("Product pressed:", item.name)}
       >
-        <Text style={styles.buttonText}>Subscribe</Text>
+        <Text style={styles.buttonText}>View Details</Text>
       </TouchableOpacity>
     </View>
   );
 
-  if (loading) {
+  const renderChipItem = ({ item }) => {
+    prices.map((p, i) => {
+      products[i].priceAmount = parseFloat(p.unit_amount);
+    });
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007BFF" />
+      <View style={styles.card}>
+        <Text style={styles.text}>{item.name}</Text>
+        <Text style={styles.price}>{item.priceAmount / 100} EGP</Text>
+
+        <Text style={styles.price}>{item.description}</Text>
+        {item.features &&
+          item.features.map((feature, index) => (
+            <Text key={index} style={styles.feature}>
+              - {feature}
+            </Text>
+          ))}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleSubscriptionPress(item)}
+        >
+          <Text style={styles.buttonText}>Subscribe</Text>
+        </TouchableOpacity>
       </View>
     );
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -103,15 +163,28 @@ export default function Home() {
           />
         </View>
       </View>
-      <View style={styles.content}>
-        <FlatList
-          data={items}
-          keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
-          showsVerticalScrollIndicator={false}
-          renderItem={renderItem}
-          contentContainerStyle={styles.cardsContainer}
-        />
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.content}>
+          {/* <Text style={styles.sectionTitle}>Products</Text>
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item._id.toString()}
+            showsVerticalScrollIndicator={false}
+            renderItem={renderProductItem}
+            contentContainerStyle={styles.cardsContainer}
+          /> */}
+          <Text style={styles.sectionTitle}>Chip Subscriptions</Text>
+          {prices.length > 0 && (
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
+              renderItem={renderChipItem}
+              contentContainerStyle={styles.cardsContainer}
+            />
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -150,9 +223,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 20,
     borderRadius: 20,
-    marginBottom: 50,
+    marginBottom: 20,
     width: 250,
-    height: 200,
+    height: 300,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -173,6 +246,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 5,
   },
+  image: {
+    width: 150,
+    height: 150,
+    marginBottom: 10,
+  },
   feature: {
     fontSize: 14,
     color: "#555",
@@ -189,9 +267,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20,
   },
 });
