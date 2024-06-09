@@ -14,7 +14,7 @@ export default function MyChip() {
   };
 
   const handleHealthMonitoringPress = () => {
-    navigation.navigate("health");
+    navigation.navigate("Health");
   };
 
   return (

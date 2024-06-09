@@ -34,13 +34,15 @@ const Mycart = () => {
         const response = await axios.get(
           "https://pawsitive-c80s.onrender.com/api/get/cart"
         );
-        console.log("Data fetched: ", response.data);
+        // console.log("Data fetched: ", response.data);
 
         const allProducts = response.data.flatMap((order) => order.products);
         const totalPrice = allProducts.reduce(
           (sum, item) => sum + (item.price || 0),
           0
         );
+
+        // console.log(allProducts);
 
         setCartItems(allProducts);
         setTotalPrice(totalPrice);
@@ -55,7 +57,7 @@ const Mycart = () => {
   }, []);
 
   const handleCheckout = () => {
-    navigation.navigate("Checkout");
+    navigation.navigate("Checkout", { total: totalPrice.toFixed(2) });
   };
 
   const renderItem = ({ item }) => (
@@ -85,7 +87,7 @@ const Mycart = () => {
         </View>
       </Appbar.Header>
       <View style={styles.content}>
-        {cartItems.length === 0 ? (
+        {cartItems > 0 ? (
           <Text style={styles.emptyCartText}>Your cart is empty</Text>
         ) : (
           <FlatList

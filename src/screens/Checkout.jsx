@@ -13,11 +13,12 @@ import {
   Platform,
 } from "react-native";
 import { Appbar } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const Checkout = () => {
   const totalPrice = 0;
   const navigation = useNavigation();
+  const { params } = useRoute();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState(null);
@@ -163,9 +164,7 @@ const Checkout = () => {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.totalText}>
-              Total Price: ${totalPrice.toFixed(2)}
-            </Text>
+            <Text style={styles.totalText}>Total Price: ${params.total}</Text>
             <TouchableOpacity
               style={styles.placeOrderButton}
               onPress={handleCheckout}

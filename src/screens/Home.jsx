@@ -35,6 +35,11 @@ export default function Home() {
       text: "Tips and Blogs",
       image: require("../../assets/images/tipsblogs.jpg"),
     },
+    {
+      id: 6,
+      text: "Adoption",
+      image: require("../../assets/images/adopt.jpg"),
+    },
   ]);
 
   const [search, setSearch] = useState("");
@@ -61,7 +66,8 @@ export default function Home() {
         <Image source={item.image} style={styles.image} />
         <Text style={styles.text}>{item.text}</Text>
         {(item.text === "Pet Lover Community" ||
-          item.text === "Tips and Blogs") && (
+          item.text === "Tips and Blogs" ||
+          item.text === "Adoption") && (
           <View style={styles.comingSoonContainer}>
             <Text style={styles.comingSoonText}>Coming Soon</Text>
           </View>

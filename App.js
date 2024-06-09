@@ -11,7 +11,7 @@ import MyTabs from "./src/screens/Tab";
 import PetShops from "./src/screens/PetShops";
 import Vets from "./src/screens/Vets";
 import Chatbot from "./src/screens/Chatbot";
-import Vetsbooking from "./src/screens/Vetsbooking.jsx";
+import Vetsbooking from "./src/screens/Vetsbooking";
 import Productdetails from "./src/screens/Productdetails";
 import Mycart from "./src/screens/Mycart";
 import Checkout from "./src/screens/Checkout";
@@ -28,7 +28,10 @@ import backup from "./src/screens/backup";
 import Customersupport from "./src/screens/Customersupport";
 import Mood from "./src/screens/Mood";
 import PetLocation from "./src/screens/Location";
+// import Health from "./src/screens/Health";
+import Nearby from "./src/screens/Nearby";
 import * as SecureStore from "expo-secure-store";
+import { LogBox } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -90,6 +93,7 @@ const App = () => {
     }),
     []
   );
+  LogBox.ignoreAllLogs();
 
   return (
     <AuthContext.Provider value={authContext}>
@@ -109,34 +113,12 @@ const App = () => {
               />
               <Stack.Screen
                 name="Login"
-                component={() => {
-                  return (
-                    <LoginForm
-                      loggedIn={() => {
-                        return dispatch({
-                          type: "LOG_IN",
-                          token: "dummy-auth-token",
-                        });
-                      }}
-                    />
-                  );
-                }}
+                component={LoginForm}
                 options={{ header: ({ navigation, route }) => <MyComponent /> }}
               />
               <Stack.Screen
                 name="Signup"
-                component={() => {
-                  return (
-                    <SignUpForm
-                      loggedIn={() => {
-                        return dispatch({
-                          type: "LOG_IN",
-                          token: "dummy-auth-token",
-                        });
-                      }}
-                    />
-                  );
-                }}
+                component={SignUpForm}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
@@ -149,16 +131,7 @@ const App = () => {
             <>
               <Stack.Screen
                 name="Home"
-                component={({ navigation }) => {
-                  return (
-                    <MyTabs
-                      navigation={navigation}
-                      logout={() => {
-                        dispatch({ type: "LOG_OUT" });
-                      }}
-                    />
-                  );
-                }}
+                component={MyTabs}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
@@ -171,7 +144,6 @@ const App = () => {
                 component={Vets}
                 options={{ headerShown: false }}
               />
-
               <Stack.Screen
                 name="Chatbot"
                 component={Chatbot}
@@ -232,7 +204,11 @@ const App = () => {
                 component={PetLocation}
                 options={{ headerShown: false }}
               />
-
+              {/* <Stack.Screen
+                name="Health"
+                component={Health}
+                options={{ headerShown: false }}
+              /> */}
               <Stack.Screen
                 name="Access"
                 component={Access}
@@ -261,6 +237,11 @@ const App = () => {
               <Stack.Screen
                 name="Customersupport"
                 component={Customersupport}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Nearby"
+                component={Nearby}
                 options={{ headerShown: false }}
               />
             </>

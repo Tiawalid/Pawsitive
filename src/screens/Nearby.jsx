@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -9,45 +9,52 @@ import {
   ScrollView,
 } from "react-native";
 import { Appbar } from "react-native-paper";
+import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 
 export default function Home({ navigation }) {
   const handleBackPress = () => {
     navigation.goBack();
   };
 
-  const items = [
-    {
-      id: 1,
-      text: "Book an Appointment",
-      image: require("../../assets/images/Vetshome.jpg"),
-    },
-    {
-      id: 2,
-      text: "View nearby vets",
-      image: require("../../assets/images/Vets.jpeg"),
-    },
-    {
-      id: 3,
-      text: "Chat with a vet",
-      image: require("../../assets/images/chatbot.jpeg"),
-    },
-  ];
+  const [vets, setVets] = useState([]);
+
+  const getToken = async () => {
+    const token = await SecureStore.getItemAsync("userToken");
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  };
+
+  const getVets = async () => {
+    await getToken();
+    try {
+      const response = await axios.get(
+        "https://pawsitive-c80s.onrender.com/api/get/vet"
+      );
+      console.log(response.data);
+      setVets(response.data);
+    } catch (error) {
+      console.error("Error fetching vets data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    getVets();
+  }, []);
 
   const handleCardPress = (item) => {
     if (item.text === "Chat with a vet") {
       navigation.navigate("Chatbot");
     } else if (item.text === "Book an Appointment") {
       navigation.navigate("Vetsbooking");
-    } else if (item.text === "View nearby vets") {
-      navigation.navigate("Nearby");
     }
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.card} onPress={() => handleCardPress(item)}>
       <View>
-        <Image source={item.image} style={styles.image} />
-        <Text style={styles.text}>{item.text}</Text>
+        <Image source={{ uri: item.image }} style={styles.image} />
+
+        <Text style={styles.text}>{item.name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -68,9 +75,9 @@ export default function Home({ navigation }) {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.content}>
           <FlatList
-            data={items}
+            data={vets}
             numColumns={2}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             renderItem={renderItem}
             contentContainerStyle={styles.cardsContainer}

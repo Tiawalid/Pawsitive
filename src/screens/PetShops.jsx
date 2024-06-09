@@ -38,7 +38,7 @@ export default function PetShops() {
         console.error("No token found");
       }
     } catch (error) {
-      console.error("Error getting token:", error);
+      console.error("Error getting token:", error.response);
     }
   };
 
@@ -49,10 +49,6 @@ export default function PetShops() {
       if (category === "Food") {
         response = await axios.get(
           "https://pawsitive-c80s.onrender.com/api/category/food"
-        );
-      } else if (category === "Accessories") {
-        response = await axios.get(
-          "https://pawsitive-c80s.onrender.com/api/category/accessories"
         );
       } else if (category === "Chips") {
         response = await axios.get(
@@ -65,7 +61,7 @@ export default function PetShops() {
       }
       setItems(response.data);
     } catch (error) {
-      console.error(`Error fetching ${category} items: `, error);
+      console.error(`Error fetching ${category} items: `, error.response);
     }
   };
 
@@ -91,7 +87,7 @@ export default function PetShops() {
       );
       setSearch(response.data);
     } catch (error) {
-      console.error("Error fetching search results: ", error);
+      console.error("Error fetching search results: ", error.response);
     }
   };
 
@@ -101,13 +97,15 @@ export default function PetShops() {
 
   const handleAddToCart = async (item) => {
     await getToken();
+    console.log(item);
     try {
       const response = await axios.post(
-        "https://pawsitive-c80s.onrender.com/api/new/cart"
+        "https://pawsitive-c80s.onrender.com/api/new/cart",
+        { quantity: 1, products: item._id }
       );
       console.log("Item added to cart:", response.data);
     } catch (error) {
-      console.error("Error adding item to cart:", error);
+      console.error("Error adding item to cart:", error.response.data);
     }
   };
 
@@ -181,16 +179,7 @@ export default function PetShops() {
             >
               <Text style={styles.categoryButtonText}>Food</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.categoryButton,
-                selectedCategory === "Accessories" &&
-                  styles.selectedCategoryButton,
-              ]}
-              onPress={() => handleCategorySelect("Accessories")}
-            >
-              <Text style={styles.categoryButtonText}>Accessories</Text>
-            </TouchableOpacity>
+
             <TouchableOpacity
               style={[
                 styles.categoryButton,

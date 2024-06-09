@@ -39,7 +39,7 @@ export default function App() {
         return null;
       }
     } catch (error) {
-      console.error("Error getting token:", error);
+      console.error("Error getting token:", error.response);
       return null;
     }
   };
@@ -63,6 +63,9 @@ export default function App() {
           name,
           email,
           petName,
+          status: "pending",
+          verificationNumber: 34567,
+
           date: selectedDate,
         }
       );
@@ -96,23 +99,6 @@ export default function App() {
         style={styles.keyboardAvoidingView}
       >
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <Text style={styles.sectionTitle}>Ask a question</Text>
-          <TouchableOpacity style={styles.questionButton}>
-            <Text style={styles.questionText}>
-              How often should I bring my pet in for check-ups?
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.questionButton}>
-            <Text style={styles.questionText}>
-              What should I include in a pet first aid kit?
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.questionButton}>
-            <Text style={styles.questionText}>
-              At what age is it recommended?
-            </Text>
-          </TouchableOpacity>
-
           <Text style={styles.sectionTitle}>Book an appointment</Text>
           <TextInput
             style={styles.input}
